@@ -1,0 +1,19 @@
+<![CDATA[
+# This file configures Netlify's build and redirect settings.
+
+# Build settings:
+# - command: The command to build your site (e.g., "npm run build", "vite build").
+# - publish: The directory containing the built site (e.g., "dist", "build").
+[build]
+  command = "npm run build" # This should match your package.json build script
+  publish = "dist"          # Vite's default output directory is "dist"
+
+# Redirect rule for Single Page Applications (SPA)
+# This rule ensures that all paths are served by index.html,
+# allowing client-side routing (e.g., React Router) to work correctly.
+# Any request that doesn't match an existing file will be rewritten to /index.html.
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+]]>
