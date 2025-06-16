@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Users, Heart, MapPin, Crown, Eye, Clock, Star, Zap, ExternalLink, AlertTriangle, Video } from 'lucide-react';
+import { ArrowLeft, Users, Heart, MapPin, Crown, Eye, Clock, Star, Zap, Video } from 'lucide-react';
 import { Room } from '../types';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { getRoomLink, getFullVideoModeLink } from '../utils/affiliateLinks';
+import { getRoomLink, getFullVideoModeLink, getEmbeddableRoomVideoLink } from '../utils/affiliateLinks';
 
 const ModelPage: React.FC = () => {
   const { username } = useParams<{ username: string }>();
@@ -17,14 +17,14 @@ const ModelPage: React.FC = () => {
 
       setLoading(true);
       setError(null);
-      setModel(null); // Reset model state on new fetch
+      setModel(null); 
 
       try {
         const params = new URLSearchParams({
           wm: 'OnFvA',
           client_ip: 'request_ip',
           format: 'json',
-          limit: '500' // Fetch a larger list to increase chances of finding the specific model if many are online
+          limit: '500' 
         });
 
         const response = await fetch(`https://chaturbate.com/api/public/affiliates/onlinerooms/?${params.toString()}`);
@@ -122,6 +122,7 @@ const ModelPage: React.FC = () => {
   
   const roomLink = getRoomLink(model.username, false);
   const fullVideoLink = getFullVideoModeLink(model.gender, model.username);
+  const embedVideoLink = getEmbeddableRoomVideoLink(model.username);
 
   return (
     <div className="min-h-screen bg-gray-900">
@@ -137,66 +138,22 @@ const ModelPage: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            <div className="bg-gradient-to-r from-purple-500/20 to-pink-500/20 border border-purple-500/30 
-                          rounded-xl p-6 mb-6">
-              <div className="flex items-start space-x-4">
-                <AlertTriangle className="h-6 w-6 text-yellow-400 flex-shrink-0 mt-1" />
-                <div>
-                  <h3 className="text-white font-semibold mb-2">Live Stream Access</h3>
-                  <p className="text-gray-300 text-sm mb-4">
-                    Due to security policies, live streams cannot be embedded directly. 
-                    Click the button below to watch {model.username} live on Chaturbate with full interactive features.
-                  </p>
-                  <a
-                    href={roomLink}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center space-x-2 bg-gradient-to-r from-purple-600 to-pink-600 
-                             hover:from-purple-700 hover:to-pink-700 text-white px-6 py-3 rounded-lg 
-                             font-semibold transition-all duration-200 transform hover:scale-105"
-                  >
-                    <Zap className="h-5 w-5" />
-                    <span>Watch {model.username} Live</span>
-                    <ExternalLink className="h-4 w-4" />
-                  </a>
-                </div>
-              </div>
-            </div>
+            {/* Removed the AlertTriangle warning box about embedding */}
 
             <div className="bg-gray-800 rounded-xl overflow-hidden border border-gray-700 mb-6">
               <div className="aspect-video relative">
-                <a
-                  href={roomLink}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="block relative w-full h-full group/videopreview" /* Added 'relative' here */
-                  aria-label={`Watch ${model.username} live`}
-                >
-                  <img
-                    src={model.image_url_360x270}
-                    alt={`${model.username}'s live preview`}
-                    className="w-full h-full object-cover"
-                  />
-                  <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent pointer-events-none" />
-                  
-                  <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                    <div 
-                      className="bg-white/20 backdrop-blur-sm text-white rounded-full p-6 
-                                 transition-all duration-200 transform 
-                                 group-hover/videopreview:bg-white/30 group-hover/videopreview:scale-110"
-                    >
-                      <Zap className="h-12 w-12" />
-                    </div>
-                  </div>
-
-                  <div className="absolute bottom-4 left-4 right-4 pointer-events-none">
-                    <h2 className="text-white text-xl font-bold mb-1">{model.username}</h2>
-                    <p className="text-gray-200 text-sm">Click to watch live</p>
-                  </div>
-                </a>
+                <iframe
+                  src={embedVideoLink}
+                  title={`${model.username}'s live stream preview`}
+                  className="w-full h-full"
+                  frameBorder="0"
+                  allow="autoplay; encrypted-media" // Autoplay might work due to disable_sound=0
+                  allowFullScreen
+                  scrolling="no" // As per Chaturbate's example iframe
+                ></iframe>
                 
-                {/* Status Badges & Viewer Count - positioned on top, not part of the <a> tag's content */}
-                <div className="absolute top-4 left-4 flex space-x-2">
+                {/* Status Badges & Viewer Count - positioned on top of the iframe */}
+                <div className="absolute top-4 left-4 flex space-x-2 pointer-events-none">
                   <span className={`${status.color} text-white text-sm px-3 py-1 rounded-full font-semibold`}>
                     {status.icon} {status.label}
                   </span>
@@ -213,7 +170,7 @@ const ModelPage: React.FC = () => {
                 </div>
 
                 <div className="absolute top-4 right-4 bg-black/70 text-white text-sm px-3 py-1 
-                              rounded-full flex items-center space-x-1">
+                              rounded-full flex items-center space-x-1 pointer-events-none">
                   <Eye className="h-4 w-4" />
                   <span>{model.num_users} watching</span>
                 </div>
@@ -336,7 +293,7 @@ const ModelPage: React.FC = () => {
                          transform hover:scale-105 flex items-center justify-center space-x-2"
               >
                 <Video className="h-5 w-5" />
-                <span>Join Livestream</span>
+                <span>Join Full Livestream</span> {/* Updated text for clarity */}
               </a>
             </div>
 
@@ -373,11 +330,10 @@ const ModelPage: React.FC = () => {
             </div>
 
             <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
-              <h4 className="text-blue-300 font-semibold mb-2">Why can't I watch here?</h4>
+              <h4 className="text-blue-300 font-semibold mb-2">About Embedded Preview</h4>
               <p className="text-gray-400 text-sm">
-                Adult content platforms use security measures that prevent embedding streams on external sites. 
-                This protects both performers and viewers. The full experience with chat, tips, and interaction 
-                is available on the official platform.
+                This is a video-only preview. For the full interactive experience including chat and tipping, 
+                please use the "Enter Chat Room" or "Join Full Livestream" buttons.
               </p>
             </div>
           </div>
