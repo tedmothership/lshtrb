@@ -147,7 +147,7 @@ const ModelPage: React.FC = () => {
                   title={`${model.username}'s live stream preview`}
                   className="w-full h-full"
                   frameBorder="0"
-                  allow="autoplay; encrypted-media" // Autoplay might work due to disable_sound=0
+                  allow="autoplay; encrypted-media" // Autoplay might work due to disable_sound=1
                   allowFullScreen
                   scrolling="no" // As per Chaturbate's example iframe
                 ></iframe>
