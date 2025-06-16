@@ -46,8 +46,8 @@ const CamGrid: React.FC<CamGridProps> = ({ rooms, loading, error }) => {
   }
 
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 
-                    gap-4 p-4 md:gap-6 md:p-6 items-stretch"> {/* items-stretch is key for equal height cards in a row */}
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3 2xl:grid-cols-4 
+                    gap-4 p-4 md:gap-6 md:p-6 items-stretch"> {/* Changed xl and 2xl columns */}
       {rooms.map((room) => (
         <CamCard key={room.username} room={room} />
       ))}
