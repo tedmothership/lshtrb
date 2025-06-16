@@ -96,10 +96,10 @@ const CamCard: React.FC<CamCardProps> = ({ room }) => {
         </div>
       </Link>
 
-      {/* Card Content Area */}
-      <div className="p-4 flex flex-col flex-grow min-h-0">
+      {/* Card Content Area - Changed flex-grow to flex-1 */}
+      <div className="p-4 flex flex-col flex-1 min-h-0"> 
         
-        {/* Text Content Wrapper - REMOVED flex-grow */}
+        {/* Text Content Wrapper */}
         <div className="space-y-3"> 
           {/* Room Subject */}
           <p className="text-gray-300 text-sm line-clamp-2 min-h-[2.5rem]">
@@ -150,7 +150,7 @@ const CamCard: React.FC<CamCardProps> = ({ room }) => {
           </div>
         </div>
 
-        {/* Action Buttons Container - ADDED mt-auto */}
+        {/* Action Buttons Container - Kept mt-auto */}
         <div className="flex space-x-2 pt-3 mt-auto"> 
           <a
             href={affiliateLink}
