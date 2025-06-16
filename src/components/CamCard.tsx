@@ -99,8 +99,8 @@ const CamCard: React.FC<CamCardProps> = ({ room }) => {
       {/* Card Content Area */}
       <div className="p-4 flex flex-col flex-1 min-h-0"> 
         
-        {/* Text Content Wrapper - CSS Grid container with enforced minimum height */}
-        <div className="grid grid-rows-[min-content_min-content_min-content_min-content] gap-y-3 min-h-36">
+        {/* Text Content Wrapper - CSS Grid container with FIXED height and overflow hidden */}
+        <div className="grid grid-rows-[min-content_min-content_min-content_min-content] gap-y-3 h-36 overflow-hidden">
           {/* Row 1: Room Subject */}
           <p className="text-gray-300 text-sm line-clamp-2 min-h-[2.5rem]">
             {room.room_subject || 'No description available'}

@@ -26,6 +26,7 @@ export default {
     'min-h-[2.5rem]',  // Pentru subiectul camerei (40px)
     'h-7',             // Pentru rândul de tag-uri (1.75rem / 28px)
     'min-h-[1.25rem]', // Pentru rândurile de statistici și locație/timp (20px)
-    'min-h-36',        // Pentru containerul grid al textului (9rem / 144px)
+    'min-h-36',        // Păstrăm pentru orice eventualitate sau alt uz
+    'h-36',            // Pentru containerul grid al textului (9rem / 144px) - NOU
   ],
 }
