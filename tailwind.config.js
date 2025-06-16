@@ -21,4 +21,11 @@ export default {
   plugins: [
     require('@tailwindcss/line-clamp'), // Adăugăm plugin-ul aici
   ],
+  safelist: [
+    'line-clamp-2',
+    'min-h-[2.5rem]',
+    'min-h-[1.75rem]',
+    'min-h-[1.25rem]',
+    // Poți adăuga și alte clase aici dacă observi că dispar în producție
+  ],
 }
