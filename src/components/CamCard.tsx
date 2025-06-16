@@ -42,13 +42,12 @@ const CamCard: React.FC<CamCardProps> = ({ room }) => {
   const status = getShowStatus(room.current_show);
   const timeOnline = Math.floor(room.seconds_online / 60);
   
-  // Generate proper affiliate link for this room
   const affiliateLink = getRoomLink(room.username, false);
 
   return (
     <div className="group relative bg-gray-800 rounded-xl overflow-hidden border border-gray-700 
                     hover:border-purple-500/50 transition-all duration-300 hover:scale-105 
-                    hover:shadow-xl hover:shadow-purple-500/10">
+                    hover:shadow-xl hover:shadow-purple-500/10 flex flex-col h-full"> {/* h-full is key */}
       {/* Image Container */}
       <Link to={`/model/${room.username}`} className="block">
         <div className="relative aspect-[4/3] overflow-hidden">
@@ -60,10 +59,8 @@ const CamCard: React.FC<CamCardProps> = ({ room }) => {
             loading="lazy"
           />
           
-          {/* Overlay Gradient */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
           
-          {/* Status Badges */}
           <div className="absolute top-2 left-2 flex flex-wrap gap-1">
             {room.is_hd && (
               <span className="bg-green-500 text-white text-xs px-2 py-1 rounded-full font-semibold">
@@ -81,14 +78,12 @@ const CamCard: React.FC<CamCardProps> = ({ room }) => {
             </span>
           </div>
 
-          {/* Viewer Count */}
           <div className="absolute top-2 right-2 bg-black/70 text-white text-xs px-2 py-1 
                         rounded-full flex items-center space-x-1">
             <Eye className="h-3 w-3" />
             <span>{room.num_users}</span>
           </div>
 
-          {/* Bottom Info */}
           <div className="absolute bottom-2 left-2 right-2">
             <div className="flex items-center justify-between text-white text-sm mb-2">
               <div className="flex items-center space-x-2">
@@ -101,58 +96,62 @@ const CamCard: React.FC<CamCardProps> = ({ room }) => {
         </div>
       </Link>
 
-      {/* Card Content */}
-      <div className="p-4 space-y-3">
-        {/* Room Subject */}
-        <p className="text-gray-300 text-sm line-clamp-2 min-h-[2.5rem]">
-          {room.room_subject || 'No description available'}
-        </p>
+      {/* Card Content Area - Arranges TextWrapper and ButtonContainer vertically, TextWrapper grows */}
+      <div className="p-4 flex flex-col flex-grow min-h-0"> {/* Removed space-y-3 from here */}
+        
+        {/* Text Content Wrapper - This div will grow, pushing the button container down */}
+        <div className="flex-grow space-y-3"> {/* Added flex-grow here and space-y-3 */}
+          {/* Room Subject */}
+          <p className="text-gray-300 text-sm line-clamp-2 min-h-[2.5rem]">
+            {room.room_subject || 'No description available'}
+          </p>
 
-        {/* Tags */}
-        {room.tags.length > 0 && (
-          <div className="flex flex-wrap gap-1">
-            {room.tags.slice(0, 3).map((tag, index) => (
-              <span
-                key={index}
-                className="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded-full"
-              >
-                #{tag}
+          {/* Tags */}
+          {room.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1">
+              {room.tags.slice(0, 3).map((tag, index) => (
+                <span
+                  key={index}
+                  className="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded-full"
+                >
+                  #{tag}
+                </span>
+              ))}
+              {room.tags.length > 3 && (
+                <span className="text-gray-400 text-xs">+{room.tags.length - 3}</span>
+              )}
+            </div>
+          )}
+
+          {/* Stats */}
+          <div className="flex items-center justify-between text-xs text-gray-400">
+            <div className="flex items-center space-x-3">
+              <div className="flex items-center space-x-1">
+                <Users className="h-3 w-3" />
+                <span>{room.num_users}</span>
+              </div>
+              <div className="flex items-center space-x-1">
+                <Heart className="h-3 w-3" />
+                <span>{room.num_followers}</span>
+              </div>
+            </div>
+            <div className="flex items-center space-x-1">
+              <MapPin className="h-3 w-3" />
+              <span className={getGenderColor(room.gender)}>
+                {getGenderLabel(room.gender)}
               </span>
-            ))}
-            {room.tags.length > 3 && (
-              <span className="text-gray-400 text-xs">+{room.tags.length - 3}</span>
-            )}
+            </div>
           </div>
-        )}
 
-        {/* Stats */}
-        <div className="flex items-center justify-between text-xs text-gray-400">
-          <div className="flex items-center space-x-3">
-            <div className="flex items-center space-x-1">
-              <Users className="h-3 w-3" />
-              <span>{room.num_users}</span>
-            </div>
-            <div className="flex items-center space-x-1">
-              <Heart className="h-3 w-3" />
-              <span>{room.num_followers}</span>
-            </div>
-          </div>
-          <div className="flex items-center space-x-1">
-            <MapPin className="h-3 w-3" />
-            <span className={getGenderColor(room.gender)}>
-              {getGenderLabel(room.gender)}
-            </span>
+          {/* Location & Time */}
+          <div className="flex items-center justify-between text-xs text-gray-500">
+            <span className="truncate">{room.location || 'Unknown location'}</span>
+            <span>{timeOnline}m online</span>
           </div>
         </div>
 
-        {/* Location & Time */}
-        <div className="flex items-center justify-between text-xs text-gray-500">
-          <span className="truncate">{room.location || 'Unknown location'}</span>
-          <span>{timeOnline}m online</span>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="flex space-x-2">
+        {/* Action Buttons Container - No longer needs mt-auto */}
+        <div className="flex space-x-2 pt-3"> 
           <a
             href={affiliateLink}
             target="_blank"

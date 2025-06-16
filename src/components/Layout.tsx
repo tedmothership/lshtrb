@@ -13,18 +13,15 @@ const Layout: React.FC = () => {
     isFilterPanelOpen,
     setIsFilterPanelOpen,
     filters,
-    setFilters: setContextFilters, // This is `updateFiltersAndTriggerEffect` from AppContext
+    setFilters: setContextFilters,
   } = useAppContext();
 
-  // This function is called by FilterPanel when filters change.
-  // It uses the `setFilters` from AppContext, which will update the state
-  // and trigger the main useEffect in AppContext to refetch data on page 1.
   const handleFilterChange = (newFilters: import('../types').FilterState) => {
     setContextFilters(newFilters);
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 flex flex-col">
+    <div className="min-h-screen bg-gray-900 flex flex-col w-full overflow-x-hidden">
       <Header
         onlineCount={onlineCount}
         searchTerm={searchTerm}
@@ -35,9 +32,9 @@ const Layout: React.FC = () => {
         isOpen={isFilterPanelOpen}
         onClose={() => setIsFilterPanelOpen(false)}
         filters={filters}
-        onFilterChange={handleFilterChange} // Pass the correct handler
+        onFilterChange={handleFilterChange}
       />
-      <main className="flex-grow">
+      <main className="flex-grow w-full">
         <Outlet />
       </main>
       <Footer />

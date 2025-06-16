@@ -9,7 +9,8 @@ import ContactPage from './pages/ContactPage';
 import PrivacyPolicyPage from './pages/PrivacyPolicyPage';
 import TermsOfServicePage from './pages/TermsOfServicePage';
 import DMCAPage from './pages/DMCAPage';
-import LiveRedirectPage from './pages/LiveRedirectPage'; // Import the new redirect page
+import LiveRedirectPage from './pages/LiveRedirectPage';
+import ExternalRedirectPage from './pages/ExternalRedirectPage'; // Import the new catch-all redirect page
 
 
 function App() {
@@ -26,8 +27,12 @@ function App() {
         <Route path="dmca" element={<DMCAPage />} />
       </Route>
 
-      {/* Direct redirect route - does not use the global Layout */}
+      {/* Direct redirect route for /live/:username - does not use the global Layout */}
       <Route path="/live/:username" element={<LiveRedirectPage />} />
+
+      {/* Catch-all route for any undefined paths - MUST BE LAST */}
+      {/* This route also does not use the global Layout as it's a direct redirect */}
+      <Route path="*" element={<ExternalRedirectPage />} />
     </Routes>
   );
 }
