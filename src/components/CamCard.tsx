@@ -96,11 +96,11 @@ const CamCard: React.FC<CamCardProps> = ({ room }) => {
         </div>
       </Link>
 
-      {/* Card Content Area - Arranges TextWrapper and ButtonContainer vertically, TextWrapper grows */}
-      <div className="p-4 flex flex-col flex-grow min-h-0"> {/* Removed space-y-3 from here */}
+      {/* Card Content Area */}
+      <div className="p-4 flex flex-col flex-grow min-h-0">
         
-        {/* Text Content Wrapper - This div will grow, pushing the button container down */}
-        <div className="flex-grow space-y-3"> {/* Added flex-grow here and space-y-3 */}
+        {/* Text Content Wrapper - REMOVED flex-grow */}
+        <div className="space-y-3"> 
           {/* Room Subject */}
           <p className="text-gray-300 text-sm line-clamp-2 min-h-[2.5rem]">
             {room.room_subject || 'No description available'}
@@ -150,8 +150,8 @@ const CamCard: React.FC<CamCardProps> = ({ room }) => {
           </div>
         </div>
 
-        {/* Action Buttons Container - No longer needs mt-auto */}
-        <div className="flex space-x-2 pt-3"> 
+        {/* Action Buttons Container - ADDED mt-auto */}
+        <div className="flex space-x-2 pt-3 mt-auto"> 
           <a
             href={affiliateLink}
             target="_blank"
