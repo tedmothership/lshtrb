@@ -19,13 +19,13 @@ export default {
     },
   },
   plugins: [
-    require('@tailwindcss/line-clamp'), // Adăugăm plugin-ul aici
+    require('@tailwindcss/line-clamp'),
   ],
   safelist: [
-    'line-clamp-2',
-    'min-h-[2.5rem]',
-    'min-h-[1.75rem]',
-    'min-h-[1.25rem]',
-    // Poți adăuga și alte clase aici dacă observi că dispar în producție
+    'line-clamp-2',    // Pentru subiectul camerei
+    'min-h-[2.5rem]',  // Pentru subiectul camerei (40px)
+    'h-7',             // Pentru rândul de tag-uri (1.75rem / 28px)
+    'min-h-[1.25rem]', // Pentru rândurile de statistici și locație/timp (20px)
+    'min-h-36',        // Pentru containerul grid al textului (9rem / 144px)
   ],
 }

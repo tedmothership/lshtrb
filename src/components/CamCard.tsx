@@ -99,15 +99,15 @@ const CamCard: React.FC<CamCardProps> = ({ room }) => {
       {/* Card Content Area */}
       <div className="p-4 flex flex-col flex-1 min-h-0"> 
         
-        {/* Text Content Wrapper - CSS Grid container */}
-        <div className="grid grid-rows-[min-content_min-content_min-content_min-content] gap-y-3">
+        {/* Text Content Wrapper - CSS Grid container with enforced minimum height */}
+        <div className="grid grid-rows-[min-content_min-content_min-content_min-content] gap-y-3 min-h-36">
           {/* Row 1: Room Subject */}
-          <p className="text-gray-300 text-sm line-clamp-2 min-h-[2.5rem]"> {/* line-clamp-2 requires the plugin */}
+          <p className="text-gray-300 text-sm line-clamp-2 min-h-[2.5rem]">
             {room.room_subject || 'No description available'}
           </p>
 
-          {/* Row 2: Tags */}
-          <div className="min-h-[1.75rem] h-[1.75rem] overflow-y-hidden"> {/* Ensures 1 line height for tags, hides overflow */}
+          {/* Row 2: Tags - Using h-7 (1.75rem) for fixed height */}
+          <div className="h-7 overflow-y-hidden">
             {room.tags.length > 0 && (
               <div className="flex flex-wrap gap-1">
                 {room.tags.slice(0, 3).map((tag, index) => (
@@ -126,7 +126,7 @@ const CamCard: React.FC<CamCardProps> = ({ room }) => {
           </div>
 
           {/* Row 3: Stats */}
-          <div className="flex items-center justify-between text-xs text-gray-400 min-h-[1.25rem]"> {/* approx 1 line of text-xs */}
+          <div className="flex items-center justify-between text-xs text-gray-400 min-h-[1.25rem]">
             <div className="flex items-center space-x-3">
               <div className="flex items-center space-x-1">
                 <Users className="h-3 w-3" />
@@ -146,7 +146,7 @@ const CamCard: React.FC<CamCardProps> = ({ room }) => {
           </div>
 
           {/* Row 4: Location & Time */}
-          <div className="flex items-center justify-between text-xs text-gray-500 min-h-[1.25rem]"> {/* approx 1 line of text-xs */}
+          <div className="flex items-center justify-between text-xs text-gray-500 min-h-[1.25rem]">
             <span className="truncate">{room.location || 'Unknown location'}</span>
             <span>{timeOnline}m online</span>
           </div>
