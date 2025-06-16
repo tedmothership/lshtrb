@@ -138,8 +138,6 @@ const ModelPage: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            {/* Removed the AlertTriangle warning box about embedding */}
-
             <div className="bg-gray-800 rounded-xl overflow-hidden border border-gray-700 mb-6">
               <div className="aspect-video relative">
                 <iframe
@@ -147,12 +145,11 @@ const ModelPage: React.FC = () => {
                   title={`${model.username}'s live stream preview`}
                   className="w-full h-full"
                   frameBorder="0"
-                  allow="autoplay; encrypted-media" // Autoplay might work due to disable_sound=1
+                  allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
                   allowFullScreen
-                  scrolling="no" // As per Chaturbate's example iframe
+                  scrolling="no"
                 ></iframe>
                 
-                {/* Status Badges & Viewer Count - positioned on top of the iframe */}
                 <div className="absolute top-4 left-4 flex space-x-2 pointer-events-none">
                   <span className={`${status.color} text-white text-sm px-3 py-1 rounded-full font-semibold`}>
                     {status.icon} {status.label}
@@ -293,7 +290,7 @@ const ModelPage: React.FC = () => {
                          transform hover:scale-105 flex items-center justify-center space-x-2"
               >
                 <Video className="h-5 w-5" />
-                <span>Join Full Livestream</span> {/* Updated text for clarity */}
+                <span>Join Full Livestream</span>
               </a>
             </div>
 
@@ -333,7 +330,8 @@ const ModelPage: React.FC = () => {
               <h4 className="text-blue-300 font-semibold mb-2">About Embedded Preview</h4>
               <p className="text-gray-400 text-sm">
                 This is a video-only preview. For the full interactive experience including chat and tipping, 
-                please use the "Enter Chat Room" or "Join Full Livestream" buttons.
+                please use the "Enter Chat Room" or "Join Full Livestream" buttons. If the video doesn't load, 
+                the model may be offline, not allow embedding, or there might be a temporary issue.
               </p>
             </div>
           </div>

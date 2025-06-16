@@ -15,6 +15,7 @@ export interface AffiliateLinkOptions {
 }
 
 const BASE_URL = 'https://chaturbate.com/in/';
+const EMBED_BASE_URL = 'https://chaturbate.com/embed/'; // For direct embeds
 const DEFAULT_CAMPAIGN = 'OnFvA';
 const DEFAULT_TRACK = 'default';
 
@@ -76,7 +77,10 @@ export const TOUR_CODES = {
   CONTEST_DETAILS: 'jb4g',
   AFFILIATE_PROGRAM: '07kX',
   YOUR_CHAT_ROOM: 'dT8X', // Used for specific room, standard view
-  YOUR_CHAT_ROOM_HOMEPAGE_FALLBACK: 'LQps'
+  YOUR_CHAT_ROOM_HOMEPAGE_FALLBACK: 'LQps',
+
+  // Embed Specific
+  VIDEO_EMBED: 'dTm0' // Tour code commonly used in Chaturbate's official video embeds
 } as const;
 
 export function buildAffiliateLink(options: AffiliateLinkOptions): string {
@@ -136,16 +140,18 @@ export function getRoomLink(username: string, useFullVideo: boolean = false): st
 }
 
 // New function to get embeddable video-only link for a specific room
+// This now uses the EMBED_BASE_URL and specific tour code for embeds.
 export function getEmbeddableRoomVideoLink(username: string): string {
-  return buildAffiliateLink({
-    tour: TOUR_CODES.YOUR_CHAT_ROOM, // 'dT8X' - Standard tour for a specific room.
-    campaign: DEFAULT_CAMPAIGN,
-    track: 'embed_model_video', // Specific tracking for this type of embed
-    room: username,
-    disable_sound: '0',         // Changed from '1' to '0' to enable sound
-    embed_video_only: '1',      // As per Chaturbate's embed example
-    mobileRedirect: 'auto'      // As per Chaturbate's embed example
+  const params = new URLSearchParams({
+    tour: TOUR_CODES.VIDEO_EMBED, // 'dTm0' - Official embed tour code
+    campaign: DEFAULT_CAMPAIGN,   // Your campaign ID
+    track: 'embed_model_video_page', // Specific tracking for this type of embed
+    disable_sound: '1',         // Sound disabled by default for autoplay
+    embed_video_only: '1',      // Video only, no chat
+    mobileRedirect: 'auto'      // Handles mobile redirection
   });
+
+  return `${EMBED_BASE_URL}${username}/?${params.toString()}`;
 }
 
 
@@ -200,11 +206,6 @@ export function getJoinPageLink(gender?: string, redirectPath?: string): string 
   
   if (redirectPath) {
     linkOptions.next = redirectPath;
-  } else if (!gender) {
-    // The example for general join page used 'redirect_to_room=-welcomepage-'
-    // This seems to be an older way. 'next' is more standard.
-    // For now, let's not add a default next if not specified.
-    // Or, if a welcome page is desired: linkOptions.next = '/?welcome=1'; (example)
   }
 
   return buildAffiliateLink(linkOptions);
