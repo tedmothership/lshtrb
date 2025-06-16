@@ -99,10 +99,10 @@ const CamCard: React.FC<CamCardProps> = ({ room }) => {
       {/* Card Content Area */}
       <div className="p-4 flex flex-col flex-1 min-h-0"> 
         
-        {/* Text Content Wrapper - Now a CSS Grid container */}
+        {/* Text Content Wrapper - CSS Grid container */}
         <div className="grid grid-rows-[min-content_min-content_min-content_min-content] gap-y-3">
           {/* Row 1: Room Subject */}
-          <p className="text-gray-300 text-sm line-clamp-2 min-h-[2.5rem]"> {/* approx 2 lines of text-sm */}
+          <p className="text-gray-300 text-sm line-clamp-2 min-h-[2.5rem]"> {/* line-clamp-2 requires the plugin */}
             {room.room_subject || 'No description available'}
           </p>
 
