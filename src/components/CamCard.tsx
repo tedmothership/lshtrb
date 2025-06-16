@@ -99,32 +99,34 @@ const CamCard: React.FC<CamCardProps> = ({ room }) => {
       {/* Card Content Area */}
       <div className="p-4 flex flex-col flex-1 min-h-0"> 
         
-        {/* Text Content Wrapper - Changed flex-grow to flex-1 */}
-        <div className="space-y-3 flex-1"> 
-          {/* Room Subject */}
-          <p className="text-gray-300 text-sm line-clamp-2 min-h-[2.5rem]">
+        {/* Text Content Wrapper - Now a CSS Grid container */}
+        <div className="grid grid-rows-[min-content_min-content_min-content_min-content] gap-y-3">
+          {/* Row 1: Room Subject */}
+          <p className="text-gray-300 text-sm line-clamp-2 min-h-[2.5rem]"> {/* approx 2 lines of text-sm */}
             {room.room_subject || 'No description available'}
           </p>
 
-          {/* Tags */}
-          {room.tags.length > 0 && (
-            <div className="flex flex-wrap gap-1">
-              {room.tags.slice(0, 3).map((tag, index) => (
-                <span
-                  key={index}
-                  className="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded-full"
-                >
-                  #{tag}
-                </span>
-              ))}
-              {room.tags.length > 3 && (
-                <span className="text-gray-400 text-xs">+{room.tags.length - 3}</span>
-              )}
-            </div>
-          )}
+          {/* Row 2: Tags */}
+          <div className="min-h-[1.75rem] h-[1.75rem] overflow-y-hidden"> {/* Ensures 1 line height for tags, hides overflow */}
+            {room.tags.length > 0 && (
+              <div className="flex flex-wrap gap-1">
+                {room.tags.slice(0, 3).map((tag, index) => (
+                  <span
+                    key={index}
+                    className="bg-gray-700 text-gray-300 text-xs px-2 py-1 rounded-full"
+                  >
+                    #{tag}
+                  </span>
+                ))}
+                {room.tags.length > 3 && (
+                  <span className="text-gray-400 text-xs self-center">+{room.tags.length - 3}</span>
+                )}
+              </div>
+            )}
+          </div>
 
-          {/* Stats */}
-          <div className="flex items-center justify-between text-xs text-gray-400">
+          {/* Row 3: Stats */}
+          <div className="flex items-center justify-between text-xs text-gray-400 min-h-[1.25rem]"> {/* approx 1 line of text-xs */}
             <div className="flex items-center space-x-3">
               <div className="flex items-center space-x-1">
                 <Users className="h-3 w-3" />
@@ -143,14 +145,14 @@ const CamCard: React.FC<CamCardProps> = ({ room }) => {
             </div>
           </div>
 
-          {/* Location & Time */}
-          <div className="flex items-center justify-between text-xs text-gray-500">
+          {/* Row 4: Location & Time */}
+          <div className="flex items-center justify-between text-xs text-gray-500 min-h-[1.25rem]"> {/* approx 1 line of text-xs */}
             <span className="truncate">{room.location || 'Unknown location'}</span>
             <span>{timeOnline}m online</span>
           </div>
         </div>
 
-        {/* Action Buttons Container - Kept mt-auto */}
+        {/* Action Buttons Container - Kept mt-auto to push to bottom of flex parent */}
         <div className="flex space-x-2 pt-3 mt-auto"> 
           <a
             href={affiliateLink}
