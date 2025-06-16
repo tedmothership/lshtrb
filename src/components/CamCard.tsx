@@ -99,8 +99,8 @@ const CamCard: React.FC<CamCardProps> = ({ room }) => {
       {/* Card Content Area */}
       <div className="p-4 flex flex-col flex-1 min-h-0"> 
         
-        {/* Text Content Wrapper - Added flex-grow */}
-        <div className="space-y-3 flex-grow"> 
+        {/* Text Content Wrapper - Changed flex-grow to flex-1 */}
+        <div className="space-y-3 flex-1"> 
           {/* Room Subject */}
           <p className="text-gray-300 text-sm line-clamp-2 min-h-[2.5rem]">
             {room.room_subject || 'No description available'}
