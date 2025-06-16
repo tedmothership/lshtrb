@@ -47,7 +47,7 @@ const CamCard: React.FC<CamCardProps> = ({ room }) => {
   return (
     <div className="group relative bg-gray-800 rounded-xl overflow-hidden border border-gray-700 
                     hover:border-purple-500/50 transition-all duration-300 hover:scale-105 
-                    hover:shadow-xl hover:shadow-purple-500/10 flex flex-col h-full"> {/* h-full is key */}
+                    hover:shadow-xl hover:shadow-purple-500/10 flex flex-col h-full">
       {/* Image Container */}
       <Link to={`/model/${room.username}`} className="block">
         <div className="relative aspect-[4/3] overflow-hidden">
@@ -96,11 +96,11 @@ const CamCard: React.FC<CamCardProps> = ({ room }) => {
         </div>
       </Link>
 
-      {/* Card Content Area - Changed flex-grow to flex-1 */}
+      {/* Card Content Area */}
       <div className="p-4 flex flex-col flex-1 min-h-0"> 
         
-        {/* Text Content Wrapper */}
-        <div className="space-y-3"> 
+        {/* Text Content Wrapper - Added flex-grow */}
+        <div className="space-y-3 flex-grow"> 
           {/* Room Subject */}
           <p className="text-gray-300 text-sm line-clamp-2 min-h-[2.5rem]">
             {room.room_subject || 'No description available'}
