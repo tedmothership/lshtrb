@@ -9,7 +9,7 @@ export default defineConfig({
   // correctly falls back to index.html for all client-side routes.
   appType: 'spa',
   optimizeDeps: {
-    exclude: ['lucide-react'],
+    exclude: ['lucide-react'], // Important for preventing issues with lucide-react in build
   },
   server: {
     // Vite's dev server handles SPA fallbacks by default when appType is 'spa'.
