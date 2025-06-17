@@ -11,12 +11,12 @@ interface AppContextType {
   totalPages: number;
   setCurrentPage: (page: number) => void;
   filters: FilterState;
-  setFilters: React.Dispatch<React.SetStateAction<FilterState>>; // For direct state manipulation if needed, triggers useEffect
+  setFilters: React.Dispatch<React.SetStateAction<FilterState>>;
   searchTerm: string;
   setSearchTerm: React.Dispatch<React.SetStateAction<string>>;
   isFilterPanelOpen: boolean;
   setIsFilterPanelOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  refetchData: (newFilters: FilterState, newPage?: number) => void; // For controlled refetch with specific page
+  refetchData: (newFilters: FilterState, newPage?: number) => void;
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
@@ -33,7 +33,15 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState('');
   const [isFilterPanelOpen, setIsFilterPanelOpen] = useState(false);
   
-  const { data, loading, error, currentPage, totalPages, refetch: apiRefetch, setCurrentPage: setApiCurrentPage } = useApi();
+  const { 
+    data, 
+    loading, 
+    error, 
+    currentPage, 
+    totalPages, 
+    refetch: apiRefetch, 
+    // setCurrentPage: setApiCurrentPage // Direct access to useApi's setter if needed
+  } = useApi();
   const skipFilterEffectRef = useRef(false);
 
   // Debounce search term
@@ -45,44 +53,60 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
   }, [searchTerm]);
 
   // Update filters state when debounced search term changes
-  // This will trigger the main filter effect below to refetch on page 1
   useEffect(() => {
-    // Avoid updating if search term hasn't actually changed
     if (debouncedSearchTerm !== filters.search) {
       setFiltersState(prevFilters => ({ ...prevFilters, search: debouncedSearchTerm }));
     }
-  }, [debouncedSearchTerm, filters.search]); // Added filters.search to prevent loop if setFiltersState was in deps
+  }, [debouncedSearchTerm, filters.search]);
 
   // Main effect to refetch data when filters state changes (e.g., from FilterPanel, or debounced search)
   // This effect always resets to page 1.
   useEffect(() => {
     if (skipFilterEffectRef.current) {
-      skipFilterEffectRef.current = false; // Reset flag and skip this run
+      skipFilterEffectRef.current = false;
       return;
     }
     apiRefetch(filters, 1); 
   }, [filters, apiRefetch]);
 
-
   // Passed as `setCurrentPage` to consumers (e.g., Pagination)
   const handleSetCurrentPage = useCallback((page: number) => {
-    apiRefetch(filters, page); // Uses current filters from state, fetches specified page
+    apiRefetch(filters, page);
   }, [filters, apiRefetch]);
   
   // Passed as `refetchData` to consumers.
-  // Use this for scenarios requiring setting new filters AND a specific page simultaneously,
-  // bypassing the default "reset to page 1" behavior of the main filter effect.
   const refetchDataWithNewFiltersAndPage = useCallback((newFilters: FilterState, newPage: number = 1) => {
-    skipFilterEffectRef.current = true; // Signal to the main filter effect to skip its next run
-    setFiltersState(newFilters);        // Update the filters state
-    apiRefetch(newFilters, newPage);    // Directly call the API with the new filters and specified page
-  }, [apiRefetch]); // setFiltersState is stable
+    skipFilterEffectRef.current = true; 
+    setFiltersState(newFilters);        
+    apiRefetch(newFilters, newPage);    
+  }, [apiRefetch]); 
 
-  // This is the `setFilters` exposed to consumers like FilterPanel.
-  // It directly updates the filter state, which then triggers the main useEffect.
   const updateFiltersAndTriggerEffect = useCallback((newFiltersOrUpdater: React.SetStateAction<FilterState>) => {
     setFiltersState(newFiltersOrUpdater);
-  }, []); // setFiltersState is stable
+  }, []);
+
+  // Effect to adjust current page if totalPages changes and currentPage becomes out of bounds
+  useEffect(() => {
+    if (loading) return; // Don't adjust while a fetch is in progress
+
+    // Ensure totalPages is not negative if data.count is 0
+    const currentTotalPages = Math.max(0, totalPages);
+
+    if (currentTotalPages > 0 && currentPage > currentTotalPages) {
+      // Current page is out of bounds (e.g., was page 6, total pages became 5)
+      // Fetch the new last valid page.
+      handleSetCurrentPage(currentTotalPages);
+    } else if (currentTotalPages === 0 && currentPage !== 1) {
+      // No pages available (e.g. filters yield no results, or error reset count in useApi)
+      // and current page is not 1. Reset to page 1.
+      // This will trigger a fetch for page 1 with current filters,
+      // which will likely still result in 0 pages, but state is consistent.
+      handleSetCurrentPage(1);
+    }
+  }, [currentPage, totalPages, loading, handleSetCurrentPage]);
+  // Note: handleSetCurrentPage depends on `filters` and `apiRefetch`.
+  // `filters` is stable unless explicitly changed. `apiRefetch` is stable.
+  // This effect correctly re-runs if `currentPage`, `totalPages`, or `loading` change.
 
   return (
     <AppContext.Provider value={{
@@ -94,12 +118,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
       totalPages,
       setCurrentPage: handleSetCurrentPage,
       filters,
-      setFilters: updateFiltersAndTriggerEffect, // Use this for FilterPanel
+      setFilters: updateFiltersAndTriggerEffect,
       searchTerm,
       setSearchTerm,
       isFilterPanelOpen,
       setIsFilterPanelOpen,
-      refetchData: refetchDataWithNewFiltersAndPage // Use this for more controlled refetches
+      refetchData: refetchDataWithNewFiltersAndPage
     }}>
       {children}
     </AppContext.Provider>

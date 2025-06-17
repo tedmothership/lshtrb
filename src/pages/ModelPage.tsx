@@ -3,7 +3,7 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Users, Heart, MapPin, Crown, Eye, Clock, Star, Zap, Video } from 'lucide-react';
 import { Room } from '../types';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { getRoomLink, getFullVideoModeLink, getEmbeddableRoomVideoLink } from '../utils/affiliateLinks';
+import { getRoomLink, getFullVideoModeLink, getEmbeddableRoomVideoLink, getFollowModelLink } from '../utils/affiliateLinks';
 
 const ModelPage: React.FC = () => {
   const { username } = useParams<{ username: string }>();
@@ -123,6 +123,7 @@ const ModelPage: React.FC = () => {
   const roomLink = getRoomLink(model.username, false);
   const fullVideoLink = getFullVideoModeLink(model.gender, model.username);
   const embedVideoLink = getEmbeddableRoomVideoLink(model.username);
+  const followModelLink = getFollowModelLink(model.username);
 
   return (
     <div className="min-h-screen bg-gray-900">
@@ -273,12 +274,17 @@ const ModelPage: React.FC = () => {
                 <span>Enter Chat Room</span>
               </a>
               
-              <button className="w-full bg-gray-700 hover:bg-gray-600 text-white py-3 
+              <a
+                href={followModelLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="block w-full bg-gray-700 hover:bg-gray-600 text-white py-3 
                                rounded-lg font-semibold transition-colors duration-200 
-                               flex items-center justify-center space-x-2">
+                               flex items-center justify-center space-x-2"
+              >
                 <Heart className="h-5 w-5" />
                 <span>Follow Model</span>
-              </button>
+              </a>
 
               <a
                 href={fullVideoLink}

@@ -71,6 +71,7 @@ export const TOUR_CODES = {
   JOIN_PAGE_MALE: 'JpRm',
   JOIN_PAGE_COUPLE: 'JpRc',
   JOIN_PAGE_TRANS: 'JpRt',
+  JOIN_PAGE_REDIRECT_TO_ROOM: 'APi5', // New: For "Join Page and Redirect to Room"
 
   // Special Pages
   BROADCASTER_SIGNUP: 'NwNd',
@@ -131,24 +132,27 @@ export function getGenderSpecificLink(gender: string, usePopup: boolean = true):
 // Room-specific link builder
 export function getRoomLink(username: string, useFullVideo: boolean = false): string {
   const tourCode = useFullVideo ? TOUR_CODES.FULL_VIDEO_MODE_CUSTOM : TOUR_CODES.YOUR_CHAT_ROOM;
+  const trackValue = useFullVideo 
+    ? `${username}_fvm_broadcaster` 
+    : `${username}_broadcaster`;
   
   return buildAffiliateLink({
     tour: tourCode,
     room: username,
-    ...(useFullVideo && { signup_notice: '1', track: 'full_video_custom_room' }) // Added specific track for clarity
+    track: trackValue,
+    ...(useFullVideo && { signup_notice: '1' })
   });
 }
 
 // New function to get embeddable video-only link for a specific room
-// This now uses the EMBED_BASE_URL and specific tour code for embeds.
 export function getEmbeddableRoomVideoLink(username: string): string {
   const params = new URLSearchParams({
-    tour: TOUR_CODES.VIDEO_EMBED, // 'dTm0' - Official embed tour code
-    campaign: DEFAULT_CAMPAIGN,   // Your campaign ID
-    track: 'embed_model_video_page', // Specific tracking for this type of embed
-    disable_sound: '1',         // Sound disabled by default for autoplay
-    embed_video_only: '1',      // Video only, no chat
-    mobileRedirect: 'auto'      // Handles mobile redirection
+    tour: TOUR_CODES.VIDEO_EMBED, 
+    campaign: DEFAULT_CAMPAIGN,   
+    track: `${username}_embed_broadcaster`, // Updated tracking
+    disable_sound: '1',         
+    embed_video_only: '1',      
+    mobileRedirect: 'auto'      
   });
 
   return `${EMBED_BASE_URL}${username}/?${params.toString()}`;
@@ -183,7 +187,7 @@ export function getRandomRoomLink(gender: string): string {
       case 'm': return TOUR_CODES.RANDOM_ROOM_MALE;
       case 'c': return TOUR_CODES.RANDOM_ROOM_COUPLE;
       case 't': return TOUR_CODES.RANDOM_ROOM_TRANS;
-      default: return TOUR_CODES.CURRENT_TOP_ROOM; // Fallback to a general top room
+      default: return TOUR_CODES.CURRENT_TOP_ROOM; 
     }
   })();
 
@@ -211,16 +215,25 @@ export function getJoinPageLink(gender?: string, redirectPath?: string): string 
   return buildAffiliateLink(linkOptions);
 }
 
+// New: Join Page and Redirect to Room (for "Follow Model" button)
+export function getFollowModelLink(username: string): string {
+  return buildAffiliateLink({
+    tour: TOUR_CODES.JOIN_PAGE_REDIRECT_TO_ROOM,
+    room: username,
+    track: `${username}_follow_redirect` // Specific tracking for this action
+  });
+}
+
 // Region-specific links
 export function getRegionLink(region: string): string {
   const tourCode = (() => {
-    switch (region.toLowerCase()) { // Normalize region input
+    switch (region.toLowerCase()) { 
       case 'northamerica': return TOUR_CODES.REGION_NORTH_AMERICAN;
       case 'europe_russia': return TOUR_CODES.REGION_EURO_RUSSIAN;
       case 'asia': return TOUR_CODES.REGION_ASIAN;
       case 'southamerica': return TOUR_CODES.REGION_SOUTH_AMERICAN;
       case 'other': return TOUR_CODES.REGION_OTHER;
-      default: return TOUR_CODES.HOME_PAGE; // Fallback to general home page
+      default: return TOUR_CODES.HOME_PAGE; 
     }
   })();
 
@@ -241,11 +254,15 @@ export function getFullVideoModeLink(gender?: string, room?: string): string {
     }
   })();
 
+  const trackValue = room 
+    ? `${room}_fvm_broadcaster` 
+    : `full_video_${gender || 'general'}`;
+
   return buildAffiliateLink({
     tour: tourCode,
-    signup_notice: '1', // Often used with full video mode
+    signup_notice: '1', 
     ...(room && { room }),
-    track: room ? 'full_video_custom_room' : `full_video_${gender || 'general'}` // More specific tracking
+    track: trackValue 
   });
 }
 
@@ -253,12 +270,12 @@ export function getFullVideoModeLink(gender?: string, room?: string): string {
 export function buildCustomTrackingLink(tour: string, track: string, sid?: string): string {
   const params = new URLSearchParams({
     tour,
-    campaign: DEFAULT_CAMPAIGN, // Assuming default campaign for this utility
+    campaign: DEFAULT_CAMPAIGN, 
     track
   });
 
   if (sid) {
-    params.set('sid', sid); // For Sub-ID tracking
+    params.set('sid', sid); 
   }
 
   return `${BASE_URL}?${params.toString()}`;
