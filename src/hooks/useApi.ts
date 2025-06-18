@@ -9,9 +9,10 @@ export const useApi = () => {
   const [data, setData] = useState<ApiResponse>({ count: 0, results: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPageInternal] = useState(1); // Renamed to avoid confusion
 
-  const fetchRooms = useCallback(async (filters: FilterState, page: number = 1) => {
+  // The core data fetching logic
+  const executeFetchRooms = useCallback(async (filters: FilterState, page: number = 1) => {
     setLoading(true);
     setError(null);
 
@@ -24,37 +25,22 @@ export const useApi = () => {
         offset: ((page - 1) * ITEMS_PER_PAGE).toString()
       });
 
-      // Add gender filters
       if (filters.gender.length > 0) {
-        filters.gender.forEach(gender => {
-          params.append('gender', gender);
-        });
+        filters.gender.forEach(gender => params.append('gender', gender));
       }
-
-      // Add region filters
       if (filters.region.length > 0) {
-        filters.region.forEach(region => {
-          params.append('region', region);
-        });
+        filters.region.forEach(region => params.append('region', region));
       }
-
-      // Add tag filters
       if (filters.tags.length > 0) {
-        filters.tags.slice(0, 5).forEach(tag => { // API limits to 5 tags
-          params.append('tag', tag);
-        });
+        filters.tags.slice(0, 5).forEach(tag => params.append('tag', tag));
       }
-
-      // Add HD filter
       if (filters.hd === true) {
         params.set('hd', 'true');
       } else if (filters.hd === false) {
         params.set('hd', 'false');
       }
-      // If filters.hd is null, the 'hd' parameter is not added.
 
       const url = `${API_BASE_URL}?${params.toString()}`;
-      
       const response = await fetch(url);
       
       if (!response.ok) {
@@ -63,7 +49,6 @@ export const useApi = () => {
 
       const apiData: ApiResponse = await response.json();
       
-      // Apply search filter client-side
       let filteredResults = apiData.results;
       if (filters.search.trim()) {
         const searchTerm = filters.search.toLowerCase().trim();
@@ -76,34 +61,36 @@ export const useApi = () => {
       }
 
       setData({
-        count: apiData.count, // Use API's total count for pagination purposes
-        results: filteredResults // Results are client-side filtered
+        count: apiData.count,
+        results: filteredResults
       });
     } catch (err) {
       console.error('API Error:', err);
       setError(err instanceof Error ? err.message : 'Failed to load data');
-      setData({ count: 0, results: [] }); // Reset data on error
+      setData({ count: 0, results: [] });
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, []); // Dependencies: setLoading, setError, setData (from useState, stable)
+          // AFFILIATE_CODE, API_BASE_URL, ITEMS_PER_PAGE (constants, stable)
 
   const refetch = useCallback((filters: FilterState, page?: number) => {
-    const pageToUse = page || currentPage;
-    // If filters change, reset to page 1, unless a specific page is requested
+    const pageToUse = page || currentPage; // Use the state currentPage
     const resetToPageOne = page === undefined; 
     const finalPage = resetToPageOne ? 1 : pageToUse;
-    setCurrentPage(finalPage);
-    return fetchRooms(filters, finalPage);
-  }, [fetchRooms, currentPage]);
+    
+    setCurrentPageInternal(finalPage); // Update the internal current page state
+    return executeFetchRooms(filters, finalPage); // Call the renamed fetching function
+  }, [executeFetchRooms, currentPage]); // Depends on the stable executeFetchRooms and internal currentPage
 
   return {
     data,
     loading,
     error,
-    currentPage,
+    currentPage, // This is the state variable
     totalPages: Math.ceil(data.count / ITEMS_PER_PAGE),
     refetch,
-    setCurrentPage // Expose setCurrentPage for direct manipulation if needed
+    setCurrentPage: setCurrentPageInternal // Expose the internal state setter directly if needed elsewhere,
+                                          // but AppContext will primarily use refetch.
   };
 };

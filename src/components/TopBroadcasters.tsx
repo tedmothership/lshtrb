@@ -12,13 +12,13 @@ const TopBroadcasters: React.FC = () => {
   const [topRooms, setTopRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [isFallback, setIsFallback] = useState(false);
+  // const [isFallback, setIsFallback] = useState(false); // No longer needed for title
 
   useEffect(() => {
     const fetchBroadcasters = async () => {
       setLoading(true);
       setError(null);
-      setIsFallback(false);
+      // setIsFallback(false); // No longer needed for title
       let rooms: Room[] = [];
       let primaryFetchSucceeded = false;
 
@@ -83,7 +83,7 @@ const TopBroadcasters: React.FC = () => {
       // Phase 2: If no rooms from Phase 1, try fallback
       if (!primaryFetchSucceeded) {
         console.log('Specified broadcasters not found/offline or Supabase issue, attempting fallback...');
-        setIsFallback(true);
+        // setIsFallback(true); // No longer needed for title
         try {
           const fallbackParams = new URLSearchParams({
             wm: AFFILIATE_CODE,
@@ -151,7 +151,7 @@ const TopBroadcasters: React.FC = () => {
     );
   }
   
-  const title = isFallback ? "Online Now (Fallback)" : "Top Broadcasters";
+  const title = "Top Broadcasters"; // Title is always "Top Broadcasters"
 
   return (
     <div className="py-8">

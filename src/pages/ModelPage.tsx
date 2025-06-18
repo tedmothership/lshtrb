@@ -1,349 +1,292 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Users, Heart, MapPin, Crown, Eye, Clock, Star, Zap, Video } from 'lucide-react';
+import React, { useEffect, useState } from 'react';
+import { useParams, useNavigate, Link } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
 import { Room } from '../types';
+import { fetchModelDetailsByName } from '../services/api';
 import LoadingSpinner from '../components/LoadingSpinner';
-import { getRoomLink, getFullVideoModeLink, getEmbeddableRoomVideoLink, getFollowModelLink } from '../utils/affiliateLinks';
+import { 
+  ArrowLeft, Users, Clock, MapPin, Eye, Heart, Languages, Crown, Zap, Tv2, PlaySquare, Gift, CalendarDays
+} from 'lucide-react';
+import { getGenderSpecificLink } from '../utils/affiliateLinks';
 
 const ModelPage: React.FC = () => {
   const { username } = useParams<{ username: string }>();
-  const [model, setModel] = useState<Room | null>(null);
+  const navigate = useNavigate();
+  const [room, setRoom] = useState<Room | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchModel = async () => {
-      if (!username) return;
+    if (!username) {
+      setError("No username provided.");
+      setLoading(false);
+      return;
+    }
 
+    const loadModelData = async () => {
       setLoading(true);
       setError(null);
-      setModel(null); 
-
+      setRoom(null); 
       try {
-        const params = new URLSearchParams({
-          wm: 'OnFvA',
-          client_ip: 'request_ip',
-          format: 'json',
-          limit: '500' 
-        });
-
-        const response = await fetch(`https://chaturbate.com/api/public/affiliates/onlinerooms/?${params.toString()}`);
-        
-        if (!response.ok) {
-          throw new Error(`API error! status: ${response.status}`);
+        const modelData = await fetchModelDetailsByName(username);
+        if (modelData) {
+          setRoom(modelData);
+        } else {
+          setError(`Model "${username}" not found or may be offline.`);
         }
-
-        const data = await response.json();
-        const foundModel = data.results.find((room: Room) => room.username.toLowerCase() === username.toLowerCase());
-        
-        if (!foundModel) {
-          throw new Error('Model currently offline or username not found in live rooms.');
-        }
-
-        setModel(foundModel);
       } catch (err) {
-        console.error('Error fetching model:', err);
-        setError(err instanceof Error ? err.message : 'Failed to load model data.');
+        console.error("Error in loadModelData:", err);
+        setError(err instanceof Error ? err.message : "Failed to load model data.");
       } finally {
         setLoading(false);
       }
     };
 
-    fetchModel();
+    loadModelData();
   }, [username]);
 
-  const getGenderColor = (gender: string) => {
-    switch (gender) {
-      case 'f': return 'text-pink-400';
-      case 'm': return 'text-blue-400';
-      case 't': return 'text-purple-400';
-      case 'c': return 'text-orange-400';
-      default: return 'text-gray-400';
-    }
+  const formatOnlineTime = (seconds: number | undefined): string => {
+    if (seconds === undefined) return 'N/A';
+    const totalMinutes = Math.floor(seconds / 60);
+    return `${totalMinutes} minutes online`;
   };
 
-  const getGenderLabel = (gender: string) => {
-    switch (gender) {
-      case 'f': return 'Female';
-      case 'm': return 'Male';
-      case 't': return 'Trans';
-      case 'c': return 'Couple';
-      default: return 'Unknown';
+  const calculateAge = (birthDateString?: string): string | null => {
+    if (!birthDateString) return null;
+    try {
+      const birthDate = new Date(birthDateString);
+      const today = new Date();
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
+      }
+      return age > 0 ? `${age} years old` : null;
+    } catch (e) {
+      console.error("Error calculating age:", e);
+      return null;
     }
   };
-
-  const getShowStatus = (show: string) => {
-    switch (show) {
-      case 'public': return { label: 'Public Show', color: 'bg-green-500', icon: '🟢' };
-      case 'private': return { label: 'Private Show', color: 'bg-red-500', icon: '🔴' };
-      case 'group': return { label: 'Group Show', color: 'bg-yellow-500', icon: '🟡' };
-      case 'away': return { label: 'Away', color: 'bg-gray-500', icon: '⚫' };
-      default: return { label: 'Unknown', color: 'bg-gray-500', icon: '⚫' };
+  
+  const getDisplayGender = (gender?: string): string => {
+    if (gender) {
+      const lowerGender = gender.toLowerCase();
+      if (lowerGender === 'f' || lowerGender === 'female') {
+        return 'Female';
+      }
+      if (gender.length > 0) {
+        return gender.charAt(0).toUpperCase() + gender.slice(1);
+      }
     }
+    return 'Female'; 
   };
 
   if (loading) {
+    return <div className="flex justify-center items-center min-h-[calc(100vh-200px)] bg-slate-900"><LoadingSpinner /></div>;
+  }
+
+  if (error || !room) {
     return (
-      <div className="min-h-screen bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <LoadingSpinner />
-        </div>
+      <div className="text-center py-10 px-4 text-white bg-slate-900 min-h-screen">
+        <h1 className="text-2xl font-semibold text-red-400 mb-4">Information</h1>
+        <p className="text-gray-300 mb-6">{error || `Model data for "${username}" could not be loaded. The model might be offline or the username is incorrect.`}</p>
+        <button
+          onClick={() => navigate('/')}
+          className="bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2 px-6 rounded-full transition-colors"
+        >
+          Back to Home
+        </button>
       </div>
     );
   }
 
-  if (error || !model) {
-    return (
-      <div className="min-h-screen bg-gray-900">
-        <div className="max-w-7xl mx-auto px-4 py-8">
-          <Link
-            to="/"
-            className="inline-flex items-center space-x-2 text-purple-400 hover:text-purple-300 mb-8"
-          >
-            <ArrowLeft className="h-5 w-5" />
-            <span>Back to Home</span>
-          </Link>
-          
-          <div className="flex flex-col items-center justify-center py-16 text-center">
-            <div className="bg-red-500/10 border border-red-500/20 rounded-lg p-6 max-w-md">
-              <h3 className="text-red-400 font-semibold mb-2">Unable to Display Model</h3>
-              <p className="text-gray-400 text-sm">
-                {error || 'This model may be currently offline, or the username could not be found in the live rooms. Please try again later or check the username.'}
-              </p>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  const pageTitle = `${room.display_name || room.username} - Live Cam Show on CamHub`;
+  const description = `Watch ${room.display_name || room.username} live on webcam. ${room.room_subject || 'Join their adult chat room now!'}`;
+  const canonicalUrl = `${window.location.origin}/model/${room.username}`;
+  const affiliateLink = getGenderSpecificLink(room.gender || '', true, room.username);
+  const ageDisplay = calculateAge(room.birthday) || "22 years old"; 
+  const modelDisplayName = room.display_name || room.username;
+  const locationDisplay = room.location || "narnia"; 
+  const onlineTimeDisplay = room.seconds_online !== undefined ? formatOnlineTime(room.seconds_online) : "162 minutes online";
+  const displayGender = getDisplayGender(room.gender);
 
-  const status = getShowStatus(model.current_show);
-  const timeOnline = Math.floor(model.seconds_online / 60);
-  
-  const roomLink = getRoomLink(model.username, false);
-  const fullVideoLink = getFullVideoModeLink(model.gender, model.username);
-  const embedVideoLink = getEmbeddableRoomVideoLink(model.username);
-  const followModelLink = getFollowModelLink(model.username);
+  const ActionButtons = () => (
+    <div className="space-y-3">
+      <a
+        href={affiliateLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center justify-center w-full bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white font-semibold py-2.5 px-4 rounded-lg text-sm transition-all duration-150"
+      >
+        <Zap size={16} className="mr-2" /> Enter Chat Room
+      </a>
+      <a
+        href={affiliateLink} 
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center justify-center w-full bg-slate-700 hover:bg-slate-600 text-white font-semibold py-2.5 px-4 rounded-lg text-sm transition-all duration-150"
+      >
+        <Heart size={16} className="mr-2" /> Follow Model
+      </a>
+      <a
+        href={affiliateLink}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="flex items-center justify-center w-full bg-gradient-to-r from-blue-600 to-cyan-500 hover:from-blue-700 hover:to-cyan-600 text-white font-semibold py-2.5 px-4 rounded-lg text-sm transition-all duration-150"
+      >
+        <Tv2 size={16} className="mr-2" /> Join Full Livestream
+      </a>
+    </div>
+  );
 
   return (
-    <div className="min-h-screen bg-gray-900">
-      <div className="max-w-7xl mx-auto px-4 py-8">
-        <Link
-          to="/"
-          className="inline-flex items-center space-x-2 text-purple-400 hover:text-purple-300 mb-8 
-                   transition-colors duration-200"
-        >
-          <ArrowLeft className="h-5 w-5" />
-          <span>Back to Home</span>
-        </Link>
+    <>
+      <Helmet>
+        <title>{pageTitle}</title>
+        <meta name="description" content={description} />
+        <link rel="canonical" href={canonicalUrl} />
+      </Helmet>
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-2">
-            <div className="bg-gray-800 rounded-xl overflow-hidden border border-gray-700 mb-6">
-              <div className="aspect-video relative">
-                <iframe
-                  src={embedVideoLink}
-                  title={`${model.username}'s live stream preview`}
-                  className="w-full h-full"
-                  frameBorder="0"
-                  allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
-                  allowFullScreen
-                  scrolling="no"
-                ></iframe>
-                
-                <div className="absolute top-4 left-4 flex space-x-2 pointer-events-none">
-                  <span className={`${status.color} text-white text-sm px-3 py-1 rounded-full font-semibold`}>
-                    {status.icon} {status.label}
-                  </span>
-                  {model.is_hd && (
-                    <span className="bg-green-500 text-white text-sm px-2 py-1 rounded-full font-semibold">
-                      HD
-                    </span>
-                  )}
-                  {model.is_new && (
-                    <span className="bg-pink-500 text-white text-sm px-2 py-1 rounded-full font-semibold animate-pulse">
-                      NEW
-                    </span>
-                  )}
-                </div>
+      <div className="bg-slate-900 min-h-screen py-8 px-4 md:px-6">
+        <div className="max-w-screen-xl mx-auto">
+          <Link
+            to="/"
+            className="mb-6 inline-flex items-center text-purple-400 hover:text-purple-300 transition-colors group"
+          >
+            <ArrowLeft size={20} className="mr-2 group-hover:-translate-x-1 transition-transform" />
+            Back to Home
+          </Link>
 
-                <div className="absolute top-4 right-4 bg-black/70 text-white text-sm px-3 py-1 
-                              rounded-full flex items-center space-x-1 pointer-events-none">
-                  <Eye className="h-4 w-4" />
-                  <span>{model.num_users} watching</span>
+          <div className="grid grid-cols-1 lg:grid-cols-7 gap-6 md:gap-8">
+            {/* Left Column (Video, Action Buttons on Mobile, Room Topic, Tags) */}
+            <div className="lg:col-span-5 space-y-6">
+              <div className="bg-slate-800 rounded-lg shadow-xl overflow-hidden">
+                <div className="aspect-video bg-black flex items-center justify-center relative">
+                  <img 
+                    src={room.image_url_360x270 || room.image_url || '/placeholder-video.jpg'} 
+                    alt={`${modelDisplayName}'s live show`} 
+                    className="w-full h-full object-cover" 
+                  />
+                  <div className="absolute top-3 left-3 flex space-x-2 z-10">
+                    <span className="bg-green-500 text-white text-xs font-semibold px-2 py-0.5 rounded-md shadow">Public Show</span>
+                    {room.is_hd && <span className="bg-blue-500 text-white text-xs font-semibold px-2 py-0.5 rounded-md shadow">HD</span>}
+                  </div>
+                  <div className="absolute top-3 right-3 bg-black/70 text-white text-xs px-2 py-1 rounded flex items-center z-10 shadow">
+                    <Eye size={14} className="mr-1" /> {room.num_users?.toLocaleString() || 'N/A'} watching
+                  </div>
                 </div>
               </div>
+
+              {/* Action Buttons for Mobile - Shown below video */}
+              <div className="lg:hidden mt-6">
+                <ActionButtons />
+              </div>
+
+              {room.room_subject && (
+                <div className="bg-slate-800 rounded-lg shadow-xl p-4 md:p-6">
+                  <h2 className="text-lg font-semibold text-white mb-2">Room Topic</h2>
+                  <p className="text-gray-300">{room.room_subject}</p>
+                </div>
+              )}
+
+              {room.tags && room.tags.length > 0 && (
+                <div className="bg-slate-800 rounded-lg shadow-xl p-4 md:p-6">
+                  <h2 className="text-lg font-semibold text-white mb-3">Tags</h2>
+                  <div className="flex flex-wrap gap-2">
+                    {room.tags.map(tag => (
+                      <Link 
+                        to={`/?tag=${encodeURIComponent(tag)}`} 
+                        key={tag} 
+                        className="bg-purple-700 hover:bg-purple-600 text-purple-200 px-2.5 py-1 rounded text-xs transition-colors"
+                      >
+                        #{tag}
+                      </Link>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
 
-            <div className="bg-gray-800 rounded-xl p-6 border border-gray-700 mb-6">
-              <h2 className="text-lg font-semibold text-white mb-3">Room Topic</h2>
-              <p className="text-gray-300 leading-relaxed">
-                {model.room_subject || 'No room topic available'}
-              </p>
-            </div>
-
-            {model.tags.length > 0 && (
-              <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-                <h2 className="text-lg font-semibold text-white mb-3">Tags</h2>
-                <div className="flex flex-wrap gap-2">
-                  {model.tags.map((tag, index) => (
-                    <span
-                      key={index}
-                      className="bg-purple-500/20 border border-purple-500/30 text-purple-300 
-                               px-3 py-1 rounded-full text-sm hover:bg-purple-500/30 
-                               transition-colors duration-200"
-                    >
-                      #{tag}
-                    </span>
-                  ))}
+            {/* Right Sidebar */}
+            <div className="lg:col-span-2 space-y-6">
+              <div className="bg-slate-800 rounded-lg shadow-xl p-4 md:p-6">
+                <div className="flex items-center mb-4">
+                  <Crown size={28} className="mr-3 text-pink-500 flex-shrink-0" />
+                  <div>
+                    <h1 className="text-2xl font-bold text-white leading-tight">{modelDisplayName}</h1>
+                    <p className="text-sm">
+                      <span className="text-pink-400">{displayGender}</span>
+                      <span className="text-gray-400"> • {ageDisplay}</span>
+                    </p>
+                  </div>
                 </div>
-              </div>
-            )}
-          </div>
-
-          <div className="space-y-6">
-            <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-              <div className="flex items-center space-x-4 mb-6">
-                <div className="relative">
-                  <Crown className={`h-8 w-8 ${getGenderColor(model.gender)}`} />
-                  {model.is_new && (
-                    <span className="absolute -top-1 -right-1 bg-pink-500 text-white text-xs 
-                                   px-1 rounded-full animate-pulse">
-                      NEW
-                    </span>
-                  )}
+                <div className="grid grid-cols-2 gap-3 mb-4">
+                  <div className="bg-slate-700 p-3 rounded-md text-center">
+                    <div className="flex items-center justify-center text-green-400 mb-1">
+                      <Eye size={16} className="mr-1.5" />
+                      <span className="text-lg font-semibold">{room.num_users?.toLocaleString() || 'N/A'}</span>
+                    </div>
+                    <p className="text-xs text-gray-400 uppercase tracking-wider">Viewers</p>
+                  </div>
+                  <div className="bg-slate-700 p-3 rounded-md text-center">
+                    <div className="flex items-center justify-center text-pink-400 mb-1">
+                      <Heart size={16} className="mr-1.5" />
+                      <span className="text-lg font-semibold">{room.num_followers?.toLocaleString() || 'N/A'}</span>
+                    </div>
+                    <p className="text-xs text-gray-400 uppercase tracking-wider">Followers</p>
+                  </div>
                 </div>
-                <div>
-                  <h1 className="text-2xl font-bold text-white">{model.username}</h1>
-                  <div className="flex items-center space-x-2 text-sm">
-                    <span className={getGenderColor(model.gender)}>
-                      {getGenderLabel(model.gender)}
-                    </span>
-                    <span className="text-gray-400">•</span>
-                    <span className="text-gray-300">{model.age} years old</span>
+                <div className="space-y-2.5 text-sm text-gray-400">
+                  <div className="flex items-center">
+                    <MapPin size={16} className="mr-3 text-gray-500 flex-shrink-0" /> {locationDisplay}
+                  </div>
+                  <div className="flex items-center">
+                    <Clock size={16} className="mr-3 text-gray-500 flex-shrink-0" /> {onlineTimeDisplay}
+                  </div>
+                  <div className="flex items-center">
+                    <Languages size={16} className="mr-3 text-gray-500 flex-shrink-0" /> English
                   </div>
                 </div>
               </div>
-
-              <div className="grid grid-cols-2 gap-4 mb-6">
-                <div className="bg-gray-700/50 rounded-lg p-3 text-center">
-                  <div className="flex items-center justify-center space-x-1 text-green-400 mb-1">
-                    <Eye className="h-4 w-4" />
-                    <span className="font-semibold">{model.num_users}</span>
-                  </div>
-                  <p className="text-xs text-gray-400">Viewers</p>
-                </div>
-                <div className="bg-gray-700/50 rounded-lg p-3 text-center">
-                  <div className="flex items-center justify-center space-x-1 text-pink-400 mb-1">
-                    <Heart className="h-4 w-4" />
-                    <span className="font-semibold">{model.num_followers}</span>
-                  </div>
-                  <p className="text-xs text-gray-400">Followers</p>
-                </div>
-              </div>
-
-              <div className="space-y-3 text-sm">
-                <div className="flex items-center space-x-2 text-gray-300">
-                  <MapPin className="h-4 w-4 text-gray-400" />
-                  <span>{model.location || 'Location not specified'}</span>
-                </div>
-                <div className="flex items-center space-x-2 text-gray-300">
-                  <Clock className="h-4 w-4 text-gray-400" />
-                  <span>{timeOnline} minutes online</span>
-                </div>
-                {model.spoken_languages && (
-                  <div className="flex items-center space-x-2 text-gray-300">
-                    <Star className="h-4 w-4 text-gray-400" />
-                    <span>{model.spoken_languages}</span>
-                  </div>
-                )}
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <a
-                href={roomLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full bg-gradient-to-r from-purple-600 to-pink-600 
-                         hover:from-purple-700 hover:to-pink-700 text-white text-center 
-                         py-3 rounded-lg font-semibold transition-all duration-200 
-                         transform hover:scale-105 flex items-center justify-center space-x-2"
-              >
-                <Zap className="h-5 w-5" />
-                <span>Enter Chat Room</span>
-              </a>
               
-              <a
-                href={followModelLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full bg-gray-700 hover:bg-gray-600 text-white py-3 
-                               rounded-lg font-semibold transition-colors duration-200 
-                               flex items-center justify-center space-x-2"
-              >
-                <Heart className="h-5 w-5" />
-                <span>Follow Model</span>
-              </a>
-
-              <a
-                href={fullVideoLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="block w-full bg-gradient-to-r from-green-600 to-blue-600 
-                         hover:from-green-700 hover:to-blue-700 text-white text-center 
-                         py-3 rounded-lg font-semibold transition-all duration-200 
-                         transform hover:scale-105 flex items-center justify-center space-x-2"
-              >
-                <Video className="h-5 w-5" />
-                <span>Join Full Livestream</span>
-              </a>
-            </div>
-
-            <div className="bg-gray-800 rounded-xl p-6 border border-gray-700">
-              <h3 className="text-lg font-semibold text-white mb-4">Model Info</h3>
-              <div className="space-y-3 text-sm">
-                {model.birthday && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Birthday:</span>
-                    <span className="text-gray-300">{model.birthday}</span>
-                  </div>
-                )}
-                {model.country && (
-                  <div className="flex justify-between">
-                    <span className="text-gray-400">Country:</span>
-                    <span className="text-gray-300">{model.country}</span>
-                  </div>
-                )}
-                <div className="flex justify-between">
-                  <span className="text-gray-400">Gender:</span>
-                  <span className={getGenderColor(model.gender)}>
-                    {getGenderLabel(model.gender)}
-                  </span>
-                </div>
+              {/* Action Buttons for Desktop - Shown in sidebar */}
+              <div className="hidden lg:block">
+                <ActionButtons />
               </div>
-            </div>
 
-            <div className="bg-gradient-to-r from-green-500/10 to-blue-500/10 border border-green-500/20 rounded-lg p-4">
-              <h4 className="text-green-300 font-semibold mb-2">Affiliate Program</h4>
-              <p className="text-gray-400 text-sm">
-                Earn 20% revenue share + $50 per broadcaster signup + 5% referred affiliate income 
-                through our premium affiliate program.
-              </p>
-            </div>
-
-            <div className="bg-blue-500/10 border border-blue-500/20 rounded-lg p-4">
-              <h4 className="text-blue-300 font-semibold mb-2">About Embedded Preview</h4>
-              <p className="text-gray-400 text-sm">
-                This is a video-only preview. For the full interactive experience including chat and tipping, 
-                please use the "Enter Chat Room" or "Join Full Livestream" buttons. If the video doesn't load, 
-                the model may be offline, not allow embedding, or there might be a temporary issue.
-              </p>
+              {(room.birthday || room.gender) && (
+                <div className="bg-slate-800 rounded-lg shadow-xl p-4 md:p-6">
+                  <h2 className="text-lg font-semibold text-white mb-3">Model Info</h2>
+                  <div className="space-y-1.5 text-sm">
+                    {room.birthday && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Birthday:</span>
+                        <span className="text-gray-200">{room.birthday}</span>
+                      </div>
+                    )}
+                    {room.gender && (
+                      <div className="flex justify-between">
+                        <span className="text-gray-400">Gender:</span>
+                        <span className="text-pink-400">{displayGender}</span>
+                      </div>
+                    )}
+                  </div>
+                </div>
+              )}
+              
+              <div className="bg-slate-800 rounded-lg shadow-xl p-4 md:p-6">
+                <h2 className="text-lg font-semibold text-green-400 mb-2 flex items-center">
+                  <Gift size={18} className="mr-2" /> Affiliate Program
+                </h2>
+                <p className="text-sm text-gray-300">
+                  Earn 20% revenue share + $50 per broadcaster signup + 5% referred affiliate income through our premium affiliate program.
+                </p>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 
