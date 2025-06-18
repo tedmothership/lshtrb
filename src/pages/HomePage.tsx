@@ -4,7 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import CamGrid from '../components/CamGrid';
 import Pagination from '../components/Pagination';
 import { useAppContext } from '../contexts/AppContext';
-import { ChevronDown, Tag, Search as SearchIcon } from 'lucide-react'; // Added SearchIcon
+import { ChevronDown, Tag, Search as SearchIcon } from 'lucide-react';
 import { getGenderSpecificLink } from '../utils/affiliateLinks';
 
 const POPULAR_TAGS = [
@@ -21,7 +21,8 @@ const HomePage: React.FC = () => {
     filters: contextFilters,
     setFilters: setContextFilters,
     setCurrentPage: setContextCurrentPage,
-    currentPage: contextCurrentPage 
+    currentPage: contextCurrentPage,
+    fetchRooms // Added fetchRooms here
   } = useAppContext();
   
   const location = useLocation();
@@ -73,18 +74,26 @@ const HomePage: React.FC = () => {
         setContextCurrentPage(pageFromUrl);
       }
     }
+    // Note: If line 61 in your file is a manual call to fetchRooms(), 
+    // ensure it's done correctly, e.g., fetchRooms(newPage, newFilters, signal).
+    // However, AppContext should handle fetching reactively when currentPage or filters change.
+    // A direct call here might be redundant. The error `fetchRooms is not a function`
+    // occurs if `fetchRooms` is not destructured from useAppContext() (as fixed above)
+    // and then attempted to be called.
 
   }, [
       pageFromUrl, tagFromUrl, searchQueryFromUrl, 
       currentTagFromContextFilters, currentSearchQueryFromContext, 
-      contextCurrentPage, setContextFilters, setContextCurrentPage
+      contextCurrentPage, setContextFilters, setContextCurrentPage,
+      // If you are calling fetchRooms directly within this useEffect, 
+      // it should also be added as a dependency:
+      // fetchRooms 
     ]);
 
 
   const handlePageChange = (page: number) => {
     const params = new URLSearchParams(location.search);
     params.set('page', page.toString());
-    // Preserve tag or search_query if they exist
     if (tagFromUrl) params.set('tag', tagFromUrl);
     if (searchQueryFromUrl) params.set('search_query', searchQueryFromUrl);
     
@@ -96,7 +105,6 @@ const HomePage: React.FC = () => {
     if (tag) {
       params.set('tag', tag);
     }
-    // search_query is implicitly cleared by AppContext effect when tag changes
     params.set('page', '1'); 
     navigate(`${location.pathname}?${params.toString()}`);
     setIsCategoriesOpen(false);
@@ -149,7 +157,7 @@ const HomePage: React.FC = () => {
           <p className="text-sm sm:text-base text-gray-300 mb-3 sm:mb-4 max-w-2xl mx-auto">
             {subHeaderText}
           </p>
-          {!currentSearchQueryFromContext && ( // Hide "Start Watching" if it's a search result page
+          {!currentSearchQueryFromContext && (
             <a
               href={getGenderSpecificLink('', true)}
               target="_blank"
@@ -210,10 +218,10 @@ const HomePage: React.FC = () => {
         <CamGrid rooms={rooms} loading={loading} error={error} />
       </div>
 
-      {!loading && totalPages > 1 && rooms.length > 0 && ( // Also check if rooms exist before showing pagination
+      {!loading && totalPages > 1 && rooms.length > 0 && (
         <div className="py-8">
           <Pagination
-            currentPage={contextCurrentPage} // Use contextCurrentPage for pagination display
+            currentPage={contextCurrentPage}
             totalPages={totalPages}
             onPageChange={handlePageChange}
           />
