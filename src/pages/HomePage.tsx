@@ -1,3 +1,4 @@
+// V5_FINAL_ATTEMPT_CHECK_LITERAL_AMPERSANDS
 import React, { useState, useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -5,7 +6,7 @@ import CamGrid from '../components/CamGrid';
 import Pagination from '../components/Pagination';
 import { useAppContext } from '../contexts/AppContext';
 import { ChevronDown, Tag, Search as SearchIcon } from 'lucide-react';
-import { getGenderSpecificLink } from '../utils/affiliateLinks';
+// import { getGenderSpecificLink } from '../utils/affiliateLinks'; // No longer needed here
 
 const POPULAR_TAGS = [
   "asmr", "bigboobs", "squirt", "lovense", "anal", "teen", "milf", "asian", "ebony", "latina", 
@@ -22,7 +23,7 @@ const HomePage: React.FC = () => {
     setFilters: setContextFilters,
     setCurrentPage: setContextCurrentPage,
     currentPage: contextCurrentPage,
-    fetchRooms // Added fetchRooms here
+    fetchRooms
   } = useAppContext();
   
   const location = useLocation();
@@ -42,52 +43,40 @@ const HomePage: React.FC = () => {
     let filtersChangedInThisEffect = false;
     let newPage = pageFromUrl;
 
-    // Sync tag from URL to context filters
     if (tagFromUrl !== currentTagFromContextFilters) {
       setContextFilters(prevFilters => ({
         ...prevFilters,
         tags: tagFromUrl ? [tagFromUrl] : [],
-        searchQuery: '' // Clear search query when tag changes
+        searchQuery: '' 
       }));
       filtersChangedInThisEffect = true;
-      newPage = 1; // Reset to page 1 on tag change
+      newPage = 1; 
     }
 
-    // Sync search query from URL to context filters
     if (searchQueryFromUrl !== currentSearchQueryFromContext) {
       setContextFilters(prevFilters => ({
         ...prevFilters,
         searchQuery: searchQueryFromUrl || '',
-        tags: searchQueryFromUrl ? [] : prevFilters.tags // Clear tags if search query is active
+        tags: searchQueryFromUrl ? [] : prevFilters.tags 
       }));
       filtersChangedInThisEffect = true;
-      newPage = 1; // Reset to page 1 on search query change
+      newPage = 1; 
     }
     
-    // If filters changed, ensure context page is set to 1 (or newPage which is 1)
     if (filtersChangedInThisEffect) {
       if (contextCurrentPage !== newPage) {
         setContextCurrentPage(newPage);
       }
-    } else { // If filters didn't change, sync page from URL to context
+    } else { 
       if (pageFromUrl !== contextCurrentPage) {
         setContextCurrentPage(pageFromUrl);
       }
     }
-    // Note: If line 61 in your file is a manual call to fetchRooms(), 
-    // ensure it's done correctly, e.g., fetchRooms(newPage, newFilters, signal).
-    // However, AppContext should handle fetching reactively when currentPage or filters change.
-    // A direct call here might be redundant. The error `fetchRooms is not a function`
-    // occurs if `fetchRooms` is not destructured from useAppContext() (as fixed above)
-    // and then attempted to be called.
-
   }, [
       pageFromUrl, tagFromUrl, searchQueryFromUrl, 
       currentTagFromContextFilters, currentSearchQueryFromContext, 
       contextCurrentPage, setContextFilters, setContextCurrentPage,
-      // If you are calling fetchRooms directly within this useEffect, 
-      // it should also be added as a dependency:
-      // fetchRooms 
+      fetchRooms 
     ]);
 
 
@@ -113,26 +102,32 @@ const HomePage: React.FC = () => {
   const siteName = "CamHub - Live Webcam Shows & Adult Chat";
   let pageTitle = siteName;
   let description = "Discover thousands of live webcam models on CamHub. Your top spot for adult entertainment, featuring a wide variety of performers and interactive shows.";
-  let headerTitle = "Live Adult Webcams";
-  let subHeaderText = "Explore thousands of live performers. Interact, chat, and enjoy the show!";
+  let headerTitle = "The #1 Hub for Lovense Lush Cams"; 
+  let subHeaderText = "Explore hundreds of performers using Lovense Lush toys and take control of their pleasure in real-time. Your tips directly control the vibrations. Start your truly interactive cam show now.";
   let categoryDisplayTitle = "Popular Categories";
 
   if (currentSearchQueryFromContext) {
     pageTitle = `Search results for "${currentSearchQueryFromContext}" - CamHub`;
     description = `Find live webcam performers matching "${currentSearchQueryFromContext}" on CamHub.`;
     headerTitle = `Search Results for: "${currentSearchQueryFromContext}"`;
-    subHeaderText = `Showing performers matching your search.`;
+    subHeaderText = `Showing performers matching your search.`; 
     categoryDisplayTitle = `Search: "${currentSearchQueryFromContext}"`;
   } else if (currentTagFromContextFilters) {
     const capitalizedTag = currentTagFromContextFilters.charAt(0).toUpperCase() + currentTagFromContextFilters.slice(1);
     pageTitle = `Live ${capitalizedTag} Webcam Shows - CamHub`;
     description = `Watch live ${currentTagFromContextFilters} cams on CamHub. Interact with ${currentTagFromContextFilters} performers in real-time adult chat rooms.`;
     headerTitle = `Live ${capitalizedTag} Cams`;
-    subHeaderText = `Explore live ${currentTagFromContextFilters} performers.`;
+    subHeaderText = `Explore live ${currentTagFromContextFilters} performers.`; 
     categoryDisplayTitle = `Category: ${capitalizedTag}`;
   }
   
+  if (!currentSearchQueryFromContext && !currentTagFromContextFilters) {
+    subHeaderText = "Explore hundreds of performers using Lovense Lush toys and take control of their pleasure in real-time. Your tips directly control the vibrations. Start your truly interactive cam show now.";
+  }
+
+
   const canonicalUrl = `${window.location.origin}${location.pathname}${location.search}`;
+  const takeControlNowLink = "https://diva.services/smartlink/?a=382&c=4&p=130101,130487,132016&fallback=aHR0cHM6Ly9jaGF0dXJiYXRlLmNvbS9pbi8/dG91cj0zTWM5JmNhbXBhaWduPU9uRnZBJnRyYWNrPWRlZmF1bHQmcmVkaXJlY3RfdG9fcm9vbT0td2VsY29tZXBhZ2Ut";
 
   return (
     <>
@@ -159,12 +154,12 @@ const HomePage: React.FC = () => {
           </p>
           {!currentSearchQueryFromContext && (
             <a
-              href={getGenderSpecificLink('', true)}
+              href={takeControlNowLink}
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2 px-6 rounded-full text-sm sm:text-base transition-colors"
             >
-              Start Watching Now
+              Take Control Now
             </a>
           )}
         </div>

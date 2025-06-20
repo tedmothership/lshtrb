@@ -139,6 +139,79 @@ const ModelPage: React.FC = () => {
     </div>
   );
 
+  const ModelProfileCardContent = (
+    <div className="bg-slate-800 rounded-lg shadow-xl p-4 md:p-6">
+      <div className="flex items-center mb-4">
+        <Crown size={28} className="mr-3 text-pink-500 flex-shrink-0" />
+        <div>
+          <h1 className="text-2xl font-bold text-white leading-tight">{modelDisplayName}</h1>
+          <p className="text-sm">
+            <span className="text-pink-400">{displayGender}</span>
+            <span className="text-gray-400"> • {ageDisplay}</span>
+          </p>
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-3 mb-4">
+        <div className="bg-slate-700 p-3 rounded-md text-center">
+          <div className="flex items-center justify-center text-green-400 mb-1">
+            <Eye size={16} className="mr-1.5" />
+            <span className="text-lg font-semibold">{room.num_users?.toLocaleString() || 'N/A'}</span>
+          </div>
+          <p className="text-xs text-gray-400 uppercase tracking-wider">Viewers</p>
+        </div>
+        <div className="bg-slate-700 p-3 rounded-md text-center">
+          <div className="flex items-center justify-center text-pink-400 mb-1">
+            <Heart size={16} className="mr-1.5" />
+            <span className="text-lg font-semibold">{room.num_followers?.toLocaleString() || 'N/A'}</span>
+          </div>
+          <p className="text-xs text-gray-400 uppercase tracking-wider">Followers</p>
+        </div>
+      </div>
+      <div className="space-y-2.5 text-sm text-gray-400">
+        <div className="flex items-center">
+          <MapPin size={16} className="mr-3 text-gray-500 flex-shrink-0" /> {locationDisplay}
+        </div>
+        <div className="flex items-center">
+          <Clock size={16} className="mr-3 text-gray-500 flex-shrink-0" /> {onlineTimeDisplay}
+        </div>
+        <div className="flex items-center">
+          <Languages size={16} className="mr-3 text-gray-500 flex-shrink-0" /> English
+        </div>
+      </div>
+    </div>
+  );
+
+  const ModelSpecificsCardContent = (room.birthday || room.gender) ? (
+    <div className="bg-slate-800 rounded-lg shadow-xl p-4 md:p-6">
+      <h2 className="text-lg font-semibold text-white mb-3">Model Info</h2>
+      <div className="space-y-1.5 text-sm">
+        {room.birthday && (
+          <div className="flex justify-between">
+            <span className="text-gray-400">Birthday:</span>
+            <span className="text-gray-200">{room.birthday}</span>
+          </div>
+        )}
+        {room.gender && (
+          <div className="flex justify-between">
+            <span className="text-gray-400">Gender:</span>
+            <span className="text-pink-400">{displayGender}</span>
+          </div>
+        )}
+      </div>
+    </div>
+  ) : null;
+
+  const AffiliateProgramCardContent = (
+    <div className="bg-slate-800 rounded-lg shadow-xl p-4 md:p-6">
+      <h2 className="text-lg font-semibold text-green-400 mb-2 flex items-center">
+        <Gift size={18} className="mr-2" /> Affiliate Program
+      </h2>
+      <p className="text-sm text-gray-300">
+        Earn 20% revenue share + $50 per broadcaster signup + 5% referred affiliate income through our premium affiliate program.
+      </p>
+    </div>
+  );
+
   return (
     <>
       <Helmet>
@@ -158,7 +231,7 @@ const ModelPage: React.FC = () => {
           </Link>
 
           <div className="grid grid-cols-1 lg:grid-cols-7 gap-6 md:gap-8">
-            {/* Left Column (Video, Action Buttons on Mobile, Room Topic, Tags) */}
+            {/* Left Column (Main Content on Mobile) */}
             <div className="lg:col-span-5 space-y-6">
               <div className="bg-slate-800 rounded-lg shadow-xl overflow-hidden">
                 <div className="aspect-video bg-black flex items-center justify-center relative">
@@ -189,6 +262,18 @@ const ModelPage: React.FC = () => {
                 </div>
               )}
 
+              {/* Model Profile for Mobile */}
+              <div className="lg:hidden">
+                {ModelProfileCardContent}
+              </div>
+
+              {/* Model Specifics for Mobile */}
+              {ModelSpecificsCardContent && (
+                <div className="lg:hidden">
+                  {ModelSpecificsCardContent}
+                </div>
+              )}
+              
               {room.tags && room.tags.length > 0 && (
                 <div className="bg-slate-800 rounded-lg shadow-xl p-4 md:p-6">
                   <h2 className="text-lg font-semibold text-white mb-3">Tags</h2>
@@ -205,48 +290,18 @@ const ModelPage: React.FC = () => {
                   </div>
                 </div>
               )}
+
+              {/* Affiliate Program for Mobile */}
+              <div className="lg:hidden">
+                {AffiliateProgramCardContent}
+              </div>
             </div>
 
-            {/* Right Sidebar */}
+            {/* Right Sidebar (Desktop) */}
             <div className="lg:col-span-2 space-y-6">
-              <div className="bg-slate-800 rounded-lg shadow-xl p-4 md:p-6">
-                <div className="flex items-center mb-4">
-                  <Crown size={28} className="mr-3 text-pink-500 flex-shrink-0" />
-                  <div>
-                    <h1 className="text-2xl font-bold text-white leading-tight">{modelDisplayName}</h1>
-                    <p className="text-sm">
-                      <span className="text-pink-400">{displayGender}</span>
-                      <span className="text-gray-400"> • {ageDisplay}</span>
-                    </p>
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-3 mb-4">
-                  <div className="bg-slate-700 p-3 rounded-md text-center">
-                    <div className="flex items-center justify-center text-green-400 mb-1">
-                      <Eye size={16} className="mr-1.5" />
-                      <span className="text-lg font-semibold">{room.num_users?.toLocaleString() || 'N/A'}</span>
-                    </div>
-                    <p className="text-xs text-gray-400 uppercase tracking-wider">Viewers</p>
-                  </div>
-                  <div className="bg-slate-700 p-3 rounded-md text-center">
-                    <div className="flex items-center justify-center text-pink-400 mb-1">
-                      <Heart size={16} className="mr-1.5" />
-                      <span className="text-lg font-semibold">{room.num_followers?.toLocaleString() || 'N/A'}</span>
-                    </div>
-                    <p className="text-xs text-gray-400 uppercase tracking-wider">Followers</p>
-                  </div>
-                </div>
-                <div className="space-y-2.5 text-sm text-gray-400">
-                  <div className="flex items-center">
-                    <MapPin size={16} className="mr-3 text-gray-500 flex-shrink-0" /> {locationDisplay}
-                  </div>
-                  <div className="flex items-center">
-                    <Clock size={16} className="mr-3 text-gray-500 flex-shrink-0" /> {onlineTimeDisplay}
-                  </div>
-                  <div className="flex items-center">
-                    <Languages size={16} className="mr-3 text-gray-500 flex-shrink-0" /> English
-                  </div>
-                </div>
+              {/* Model Profile for Desktop */}
+              <div className="hidden lg:block">
+                {ModelProfileCardContent}
               </div>
               
               {/* Action Buttons for Desktop - Shown in sidebar */}
@@ -254,33 +309,16 @@ const ModelPage: React.FC = () => {
                 <ActionButtons />
               </div>
 
-              {(room.birthday || room.gender) && (
-                <div className="bg-slate-800 rounded-lg shadow-xl p-4 md:p-6">
-                  <h2 className="text-lg font-semibold text-white mb-3">Model Info</h2>
-                  <div className="space-y-1.5 text-sm">
-                    {room.birthday && (
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">Birthday:</span>
-                        <span className="text-gray-200">{room.birthday}</span>
-                      </div>
-                    )}
-                    {room.gender && (
-                      <div className="flex justify-between">
-                        <span className="text-gray-400">Gender:</span>
-                        <span className="text-pink-400">{displayGender}</span>
-                      </div>
-                    )}
-                  </div>
+              {/* Model Specifics for Desktop */}
+              {ModelSpecificsCardContent && (
+                <div className="hidden lg:block">
+                  {ModelSpecificsCardContent}
                 </div>
               )}
               
-              <div className="bg-slate-800 rounded-lg shadow-xl p-4 md:p-6">
-                <h2 className="text-lg font-semibold text-green-400 mb-2 flex items-center">
-                  <Gift size={18} className="mr-2" /> Affiliate Program
-                </h2>
-                <p className="text-sm text-gray-300">
-                  Earn 20% revenue share + $50 per broadcaster signup + 5% referred affiliate income through our premium affiliate program.
-                </p>
+              {/* Affiliate Program for Desktop */}
+              <div className="hidden lg:block">
+                {AffiliateProgramCardContent}
               </div>
             </div>
           </div>

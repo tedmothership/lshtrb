@@ -1,8 +1,10 @@
 import React from 'react';
 import { Zap, ShieldCheck, Film, Users } from 'lucide-react';
-import { getGenderSpecificLink } from '../utils/affiliateLinks';
+// import { getGenderSpecificLink } from '../utils/affiliateLinks'; // No longer needed here
 
 const HeroBanner: React.FC = () => {
+  const takeControlNowLink = "https://diva.services/smartlink/?a=382&c=4&p=130101,130487,132016&fallback=aHR0cHM6Ly9jaGF0dXJiYXRlLmNvbS9pbi8/dG91cj0zTWM5JmNhbXBhaWduPU9uRnZBJnRyYWNrPWRlZmF1bHQmcmVkaXJlY3RfdG9fcm9vbT0td2VsY29tZXBhZ2Ut";
+
   return (
     <div className="relative bg-gradient-to-br from-purple-700 via-pink-600 to-red-500 text-white overflow-hidden">
       <div className="absolute inset-0 bg-black/20 backdrop-blur-sm"></div> {/* Subtle overlay */}
@@ -31,12 +33,12 @@ const HeroBanner: React.FC = () => {
         </div>
         <div className="mt-8">
           <a
-            href={getGenderSpecificLink('default_cam_page', true)}
+            href={takeControlNowLink}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-block bg-purple-500 hover:bg-purple-400 text-white font-semibold px-8 py-3 sm:px-10 sm:py-4 rounded-lg shadow-lg text-base sm:text-lg transition-transform transform hover:scale-105"
           >
-            Explore Live Cams
+            Take Control Now
           </a>
         </div>
       </div>
