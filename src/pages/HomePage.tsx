@@ -6,7 +6,7 @@ import CamGrid from '../components/CamGrid';
 import Pagination from '../components/Pagination';
 import { useAppContext } from '../contexts/AppContext';
 import { ChevronDown, Tag, Search as SearchIcon } from 'lucide-react';
-// import { getGenderSpecificLink } from '../utils/affiliateLinks'; // No longer needed here
+// import { getGenderSpecificLink } from '../utils/affiliateLinks'; // Removed as direct link is used
 
 const POPULAR_TAGS = [
   "asmr", "bigboobs", "squirt", "lovense", "anal", "teen", "milf", "asian", "ebony", "latina", 
@@ -102,7 +102,7 @@ const HomePage: React.FC = () => {
   const siteName = "CamHub - Live Webcam Shows & Adult Chat";
   let pageTitle = siteName;
   let description = "Discover thousands of live webcam models on CamHub. Your top spot for adult entertainment, featuring a wide variety of performers and interactive shows.";
-  let headerTitle = "The #1 Hub for Lovense Lush Cams"; 
+  let headerTitle = "The #1 Hub for Lovense Lush Cams";
   let subHeaderText = "Explore hundreds of performers using Lovense Lush toys and take control of their pleasure in real-time. Your tips directly control the vibrations. Start your truly interactive cam show now.";
   let categoryDisplayTitle = "Popular Categories";
 
@@ -110,14 +110,14 @@ const HomePage: React.FC = () => {
     pageTitle = `Search results for "${currentSearchQueryFromContext}" - CamHub`;
     description = `Find live webcam performers matching "${currentSearchQueryFromContext}" on CamHub.`;
     headerTitle = `Search Results for: "${currentSearchQueryFromContext}"`;
-    subHeaderText = `Showing performers matching your search.`; 
+    subHeaderText = `Showing performers matching your search.`;
     categoryDisplayTitle = `Search: "${currentSearchQueryFromContext}"`;
   } else if (currentTagFromContextFilters) {
     const capitalizedTag = currentTagFromContextFilters.charAt(0).toUpperCase() + currentTagFromContextFilters.slice(1);
     pageTitle = `Live ${capitalizedTag} Webcam Shows - CamHub`;
     description = `Watch live ${currentTagFromContextFilters} cams on CamHub. Interact with ${currentTagFromContextFilters} performers in real-time adult chat rooms.`;
     headerTitle = `Live ${capitalizedTag} Cams`;
-    subHeaderText = `Explore live ${currentTagFromContextFilters} performers.`; 
+    subHeaderText = `Explore live ${currentTagFromContextFilters} performers.`;
     categoryDisplayTitle = `Category: ${capitalizedTag}`;
   }
   
@@ -125,9 +125,9 @@ const HomePage: React.FC = () => {
     subHeaderText = "Explore hundreds of performers using Lovense Lush toys and take control of their pleasure in real-time. Your tips directly control the vibrations. Start your truly interactive cam show now.";
   }
 
+  const takeControlNowLink = "https://diva.services/smartlink/?a=382&c=4&p=130101,130487,132016&fallback=aHR0cHM6Ly9jaGF0dXJiYXRlLmNvbS9pbi8/dG91cj0zTWM5JmNhbXBhaWduPU9uRnZBJnRyYWNrPWRlZmF1bHQmcmVkaXJlY3RfdG9fcm9vbT0td2VsY29tZXBhZ2Ut";
 
   const canonicalUrl = `${window.location.origin}${location.pathname}${location.search}`;
-  const takeControlNowLink = "https://diva.services/smartlink/?a=382&c=4&p=130101,130487,132016&fallback=aHR0cHM6Ly9jaGF0dXJiYXRlLmNvbS9pbi8/dG91cj0zTWM5JmNhbXBhaWduPU9uRnZBJnRyYWNrPWRlZmF1bHQmcmVkaXJlY3RfdG9fcm9vbT0td2VsY29tZXBhZ2Ut";
 
   return (
     <>
@@ -154,7 +154,7 @@ const HomePage: React.FC = () => {
           </p>
           {!currentSearchQueryFromContext && (
             <a
-              href={takeControlNowLink}
+              href={takeControlNowLink} // Updated link
               target="_blank"
               rel="noopener noreferrer"
               className="inline-block bg-pink-600 hover:bg-pink-700 text-white font-semibold py-2 px-6 rounded-full text-sm sm:text-base transition-colors"

@@ -235,11 +235,17 @@ const ModelPage: React.FC = () => {
             <div className="lg:col-span-5 space-y-6">
               <div className="bg-slate-800 rounded-lg shadow-xl overflow-hidden">
                 <div className="aspect-video bg-black flex items-center justify-center relative">
-                  <img 
-                    src={room.image_url_360x270 || room.image_url || '/placeholder-video.jpg'} 
-                    alt={`${modelDisplayName}'s live show`} 
-                    className="w-full h-full object-cover" 
-                  />
+                  {/* Replaced img with iframe */}
+                  <iframe 
+                    src="https://cbxyz.com/in/?tour=dU9X&campaign=OnFvA&track=embed&signup_notice=1&disable_sound=1&mobileRedirect=never" 
+                    height="100%" // Adjusted for responsiveness within aspect-video
+                    width="100%"  // Adjusted for responsiveness within aspect-video
+                    frameBorder="0" 
+                    className="absolute top-0 left-0 w-full h-full" // Ensure iframe fills the container
+                    scrolling="no"
+                    allowFullScreen
+                    title={`${modelDisplayName}'s live show`}
+                  ></iframe>
                   <div className="absolute top-3 left-3 flex space-x-2 z-10">
                     <span className="bg-green-500 text-white text-xs font-semibold px-2 py-0.5 rounded-md shadow">Public Show</span>
                     {room.is_hd && <span className="bg-blue-500 text-white text-xs font-semibold px-2 py-0.5 rounded-md shadow">HD</span>}
