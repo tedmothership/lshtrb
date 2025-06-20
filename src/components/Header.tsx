@@ -1,129 +1,113 @@
-import React, { useState, useEffect } from 'react';
-import { Crown, Sparkles, Menu, Search, UserPlus, X } from 'lucide-react';
-import { getGenderSpecificLink } from '../utils/affiliateLinks';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Search, Menu, X } from 'lucide-react';
 
-interface HeaderProps {}
-
-const Header: React.FC<HeaderProps> = () => {
-  const [isSearchOpen, setIsSearchOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+const Header: React.FC = () => {
   const navigate = useNavigate();
-  const location = useLocation();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
-  useEffect(() => {
-    // If search is open and user navigates away (e.g. clicking a link), close search
-    if (isSearchOpen) {
-      const params = new URLSearchParams(location.search);
-      if (!params.has('search_query')) { // if navigation is not due to a search action itself
-         // setIsSearchOpen(false); // This might be too aggressive, consider user experience
-      }
-    }
-  }, [location, isSearchOpen]);
-
-  const toggleSearch = () => {
-    setIsSearchOpen(!isSearchOpen);
-    if (isSearchOpen) { // If closing search, clear query
-      setSearchQuery('');
-    }
-  };
-
-  const handleSearchSubmit = (e: React.FormEvent) => {
+  const handleSearchSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (searchQuery.trim() === '') {
-      // Optionally remove search_query from URL if submitting empty search
-      const params = new URLSearchParams(location.search);
-      params.delete('search_query');
-      navigate(`${location.pathname}?${params.toString()}`);
-    } else {
-      navigate(`/?search_query=${encodeURIComponent(searchQuery.trim())}&page=1`);
+    if (searchQuery.trim()) {
+      navigate(`/?search_query=${encodeURIComponent(searchQuery.trim())}`);
+      setSearchQuery(''); // Clear search input after navigation
+      setIsMobileMenuOpen(false); // Close mobile menu if open
     }
-    // setSearchQuery(''); // Clear input after navigation
-    setIsSearchOpen(false); // Close search bar UI
   };
+
+  // Placeholder for nav links if needed in future
+  const navLinks = [
+    // Example: { name: 'Home', href: '/' },
+    // Example: { name: 'Categories', href: '/categories' },
+  ];
 
   return (
-    <header className="bg-gray-900/95 backdrop-blur-sm border-b border-gray-800 sticky top-0 z-50">
-      <div className="mx-auto px-4 sm:px-6 lg:px-8">
+    <header className="bg-slate-900 text-white shadow-lg sticky top-0 z-50">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Left Group: Hamburger Menu and Logo (conditionally shown) */}
-          <div className={`flex items-center space-x-4 ${isSearchOpen ? 'hidden sm:flex flex-shrink-0' : 'flex'}`}> {/* Hide on small screens when search is open */}
-            <button 
-              aria-label="Open menu" 
-              className="text-gray-400 hover:text-white focus:outline-none"
-            >
-              <Menu className="h-6 w-6" />
-            </button>
-            {!isSearchOpen && (
-              <a 
-                href={getGenderSpecificLink('', false)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center space-x-3 hover:opacity-80 transition-opacity"
-              >
-                <div className="relative">
-                  <Crown className="h-8 w-8 text-purple-500" />
-                  <Sparkles className="h-4 w-4 text-pink-400 absolute -top-1 -right-1" />
-                </div>
-                <div>
-                  <h1 className="text-xl font-bold text-white">lushturbate</h1>
-                  <p className="text-xs text-gray-400">Premium Adult Entertainment</p>
-                </div>
-              </a>
-            )}
+          {/* Logo */}
+          <div className="flex-shrink-0">
+            <Link to="/" className="flex items-center" onClick={() => setIsMobileMenuOpen(false)}>
+              <img 
+                src="/logo.png" 
+                alt="LUSHTURBATE Logo" 
+                className="h-10 w-auto" // Adjust height as needed. Max height is h-12 for h-16 header.
+              />
+              {/* Optional: Site name text next to logo if logo is just an icon */}
+              {/* <span className="ml-3 text-xl font-bold">LUSHTURBATE</span> */}
+            </Link>
           </div>
 
-          {/* Search Bar (conditionally shown) */}
-          {isSearchOpen && (
-            <form 
-              onSubmit={handleSearchSubmit} 
-              // Make form take available space but not excessively, and center it if space allows
-              className="flex-grow flex items-center justify-center min-w-0 px-2 sm:px-0" 
-            >
-              <div className="flex w-full max-w-sm sm:max-w-md"> {/* Max width for the input group */}
-                <input
-                  type="text"
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder="Search models, tags..."
-                  className="bg-gray-800 text-white placeholder-gray-500 w-full px-3 py-2 text-sm rounded-l-md focus:ring-pink-500 focus:border-pink-500 focus:outline-none min-w-[100px]" // min-w to prevent collapse
-                  autoFocus
-                />
-                <button 
-                  type="submit" 
-                  aria-label="Submit search"
-                  className="bg-pink-600 hover:bg-pink-700 text-white p-2 rounded-r-md focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 focus:ring-offset-gray-900"
-                >
-                  <Search className="h-5 w-5" />
-                </button>
-              </div>
-            </form>
-          )}
-
-          {/* Right Group: Search Icon/Close Icon and Join Button (conditionally shown) */}
-          <div className={`flex items-center space-x-3 sm:space-x-4 ${isSearchOpen ? 'flex-shrink-0' : ''}`}>
-            <button 
-              aria-label={isSearchOpen ? "Close search" : "Open search"} 
-              onClick={toggleSearch} 
-              className="text-gray-400 hover:text-white focus:outline-none p-1"
-            >
-              {isSearchOpen ? <X className="h-6 w-6" /> : <Search className="h-5 w-5 sm:h-6 sm:w-6" />}
-            </button>
-            {!isSearchOpen && (
-              <a
-                href={getGenderSpecificLink('', false)}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="bg-pink-600 hover:bg-pink-700 text-white font-semibold text-sm px-3 sm:px-4 py-2 rounded-full transition-colors flex items-center space-x-1 sm:space-x-1.5"
+          {/* Desktop Search Bar & Nav Links */}
+          <div className="hidden md:flex items-center space-x-6">
+            {navLinks.map(link => (
+              <Link 
+                key={link.name} 
+                to={link.href} 
+                className="hover:text-pink-400 transition-colors px-3 py-2 rounded-md text-sm font-medium"
               >
-                <UserPlus className="h-4 w-4" />
-                <span className="block sm:hidden">JOIN</span>
-                <span className="hidden sm:block">JOIN FREE</span>
-              </a>
-            )}
+                {link.name}
+              </Link>
+            ))}
+            <form onSubmit={handleSearchSubmit} className="relative">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search models..."
+                className="bg-slate-800 text-white placeholder-gray-400 rounded-full py-2 px-4 pl-10 focus:ring-2 focus:ring-pink-500 focus:outline-none text-sm w-64"
+              />
+              <button type="submit" aria-label="Search" className="absolute left-3 top-1/2 transform -translate-y-1/2">
+                <Search className="h-5 w-5 text-gray-400 hover:text-pink-400" />
+              </button>
+            </form>
+          </div>
+
+          {/* Mobile Menu Button */}
+          <div className="md:hidden flex items-center">
+            <button
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-white hover:bg-slate-700 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-pink-500"
+              aria-controls="mobile-menu"
+              aria-expanded={isMobileMenuOpen}
+            >
+              <span className="sr-only">Open main menu</span>
+              {isMobileMenuOpen ? <X className="block h-6 w-6" /> : <Menu className="block h-6 w-6" />}
+            </button>
           </div>
         </div>
       </div>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div id="mobile-menu" className="md:hidden absolute top-16 inset-x-0 bg-slate-900/95 backdrop-blur-sm p-4 space-y-4 border-t border-slate-700 shadow-xl">
+          <form onSubmit={handleSearchSubmit} className="relative">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search models..."
+              className="w-full bg-slate-800 text-white placeholder-gray-400 rounded-full py-2.5 px-4 pl-10 focus:ring-2 focus:ring-pink-500 focus:outline-none text-sm"
+            />
+             <button type="submit" aria-label="Search" className="absolute left-3 top-1/2 transform -translate-y-1/2">
+                <Search className="h-5 w-5 text-gray-400 hover:text-pink-400" />
+              </button>
+          </form>
+          <nav className="space-y-1">
+            {navLinks.map(link => (
+              <Link
+                key={link.name}
+                to={link.href}
+                onClick={() => setIsMobileMenuOpen(false)}
+                className="block hover:bg-slate-700 hover:text-pink-400 transition-colors px-3 py-2 rounded-md text-base font-medium"
+              >
+                {link.name}
+              </Link>
+            ))}
+          </nav>
+        </div>
+      )}
     </header>
   );
 };

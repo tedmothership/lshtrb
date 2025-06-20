@@ -9,12 +9,25 @@ import {
 } from 'lucide-react';
 import { getGenderSpecificLink } from '../utils/affiliateLinks';
 
+const DESKTOP_IFRAME_SRC = "https://cbxyz.com/in/?tour=dU9X&campaign=OnFvA&track=embed&signup_notice=1&disable_sound=1&mobileRedirect=never";
+const MOBILE_IFRAME_SRC = "https://cbxyz.com/in/?tour=dTm0&campaign=OnFvA&track=embed&disable_sound=1&mobileRedirect=auto&embed_video_only=1";
+
 const ModelPage: React.FC = () => {
   const { username } = useParams<{ username: string }>();
   const navigate = useNavigate();
   const [room, setRoom] = useState<Room | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isMobileView, setIsMobileView] = useState(window.innerWidth < 768);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobileView(window.innerWidth < 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     if (!username) {
@@ -109,6 +122,7 @@ const ModelPage: React.FC = () => {
   const locationDisplay = room.location || "narnia"; 
   const onlineTimeDisplay = room.seconds_online !== undefined ? formatOnlineTime(room.seconds_online) : "162 minutes online";
   const displayGender = getDisplayGender(room.gender);
+  const currentIframeSrc = isMobileView ? MOBILE_IFRAME_SRC : DESKTOP_IFRAME_SRC;
 
   const ActionButtons = () => (
     <div className="space-y-3">
@@ -235,13 +249,12 @@ const ModelPage: React.FC = () => {
             <div className="lg:col-span-5 space-y-6">
               <div className="bg-slate-800 rounded-lg shadow-xl overflow-hidden">
                 <div className="aspect-video bg-black flex items-center justify-center relative">
-                  {/* Replaced img with iframe */}
                   <iframe 
-                    src="https://cbxyz.com/in/?tour=dU9X&campaign=OnFvA&track=embed&signup_notice=1&disable_sound=1&mobileRedirect=never" 
-                    height="100%" // Adjusted for responsiveness within aspect-video
-                    width="100%"  // Adjusted for responsiveness within aspect-video
+                    src={currentIframeSrc}
+                    height="100%"
+                    width="100%"
                     frameBorder="0" 
-                    className="absolute top-0 left-0 w-full h-full" // Ensure iframe fills the container
+                    className="absolute top-0 left-0 w-full h-full"
                     scrolling="no"
                     allowFullScreen
                     title={`${modelDisplayName}'s live show`}

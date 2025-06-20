@@ -1,46 +1,28 @@
 import React from 'react';
-import { getGenderSpecificLink } from '../utils/affiliateLinks';
+import { Link } from 'react-router-dom';
 
 const Footer: React.FC = () => {
   const currentYear = new Date().getFullYear();
-
   return (
-    <footer className="bg-gray-900 border-t border-gray-800">
-      {/* Removed max-w-7xl, kept mx-auto and padding for content alignment */}
-      <div className="mx-auto py-8 px-4 sm:px-6 lg:px-8 text-center text-gray-400">
+    <footer className="bg-slate-800 text-gray-400 border-t border-slate-700">
+      <div className="container mx-auto px-4 py-8 text-center">
         <div className="mb-4">
-          <a 
-            href={getGenderSpecificLink('', false)} // Main site link or a general affiliate link
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-pink-500 hover:text-pink-400 transition-colors mx-2"
-          >
-            Home
-          </a>
-          <a 
-            href={getGenderSpecificLink('female', false)} // Example category link
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-pink-500 hover:text-pink-400 transition-colors mx-2"
-          >
-            Female Cams
-          </a>
-          <a 
-            href={getGenderSpecificLink('male', false)} // Example category link
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-pink-500 hover:text-pink-400 transition-colors mx-2"
-          >
-            Male Cams
-          </a>
-          {/* Add more links as needed */}
+          <img src="/logo.png" alt="LUSHTURBATE Logo" className="h-10 w-auto mx-auto mb-2" />
+          <p className="text-sm">
+            &copy; {currentYear} LUSHTURBATE. All rights reserved.
+          </p>
         </div>
-        <p className="text-sm">
-          &copy; {currentYear} lushturbate.com. All rights reserved.
+        <p className="text-xs mt-2 mb-4 max-w-md mx-auto">
+          This website contains sexually explicit content. You must be 18 years of age or older to enter. 
+          All performers were 18 years of age or older at the time of depiction.
         </p>
-        <p className="text-xs mt-2">
-          This website contains sexually explicit content. You must be 18 years or older to enter.
-        </p>
+        <div className="flex justify-center space-x-4 text-xs">
+          <Link to="/terms" className="hover:text-pink-400 transition-colors">Terms of Service</Link>
+          <span>|</span>
+          <Link to="/privacy" className="hover:text-pink-400 transition-colors">Privacy Policy</Link>
+          <span>|</span>
+          <Link to="/contact" className="hover:text-pink-400 transition-colors">Contact Us</Link>
+        </div>
       </div>
     </footer>
   );
