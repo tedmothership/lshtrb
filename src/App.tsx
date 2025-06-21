@@ -1,5 +1,5 @@
 import React from 'react';
-import { Routes, Route, useLocation, Link } from 'react-router-dom'; // Added Link
+import { Routes, Route, useLocation, Link } from 'react-router-dom';
 import Header from './components/Header';
 import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
@@ -8,7 +8,7 @@ import HeroBanner from './components/HeroBanner';
 
 // Placeholder pages for footer links
 const PlaceholderPage: React.FC<{ title: string }> = ({ title }) => (
-  <div className="py-10 px-4 text-center container mx-auto"> {/* Added container for consistency */}
+  <div className="py-10 px-4 text-center container mx-auto">
     <h1 className="text-3xl font-bold mb-4 text-white">{title}</h1>
     <p className="text-gray-300">This is a placeholder page for {title}. Content will be added soon.</p>
     <Link to="/" className="text-pink-400 hover:underline mt-6 inline-block px-6 py-2 border border-pink-400 rounded-md hover:bg-pink-400 hover:text-slate-900 transition-colors">
@@ -18,6 +18,7 @@ const PlaceholderPage: React.FC<{ title: string }> = ({ title }) => (
 );
 
 const App: React.FC = () => {
+  console.log('[App.tsx] App component rendering.');
   const location = useLocation();
   const isHomePage = location.pathname === '/';
   const isSearchOrTagPage = location.search.includes('tag=') || location.search.includes('search_query=');

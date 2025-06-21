@@ -7,7 +7,7 @@ const Footer: React.FC = () => {
     <footer className="bg-slate-800 text-gray-400 border-t border-slate-700">
       <div className="container mx-auto px-4 py-8 text-center">
         <div className="mb-4">
-          <img src="/logo.png" alt="LUSHTURBATE Logo" className="h-10 w-auto mx-auto mb-2" />
+          <img src="https://i.imgur.com/bUxZ7Cj.png" alt="LUSHTURBATE Logo" className="h-10 w-auto mx-auto mb-2" /> {/* Adjusted height to h-10 (40px) */}
           <p className="text-sm">
             &copy; {currentYear} LUSHTURBATE. All rights reserved.
           </p>

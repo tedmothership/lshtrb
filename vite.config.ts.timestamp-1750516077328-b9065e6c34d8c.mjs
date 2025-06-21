@@ -1,0 +1,22 @@
+// vite.config.ts
+import { defineConfig } from "file:///home/project/node_modules/vite/dist/node/index.js";
+import react from "file:///home/project/node_modules/@vitejs/plugin-react/dist/index.mjs";
+var vite_config_default = defineConfig({
+  plugins: [react()],
+  // Explicitly set appType to 'spa'. This is often the default if you have an index.html
+  // at the root, but being explicit can sometimes help ensure the dev server
+  // correctly falls back to index.html for all client-side routes.
+  appType: "spa",
+  optimizeDeps: {
+    exclude: ["lucide-react"]
+    // Important for preventing issues with lucide-react in build
+  },
+  server: {
+    // Vite's dev server handles SPA fallbacks by default when appType is 'spa'.
+    // No explicit historyApiFallback is usually needed here as Vite has its own mechanism.
+  }
+});
+export {
+  vite_config_default as default
+};
+//# sourceMappingURL=data:application/json;base64,ewogICJ2ZXJzaW9uIjogMywKICAic291cmNlcyI6IFsidml0ZS5jb25maWcudHMiXSwKICAic291cmNlc0NvbnRlbnQiOiBbImNvbnN0IF9fdml0ZV9pbmplY3RlZF9vcmlnaW5hbF9kaXJuYW1lID0gXCIvaG9tZS9wcm9qZWN0XCI7Y29uc3QgX192aXRlX2luamVjdGVkX29yaWdpbmFsX2ZpbGVuYW1lID0gXCIvaG9tZS9wcm9qZWN0L3ZpdGUuY29uZmlnLnRzXCI7Y29uc3QgX192aXRlX2luamVjdGVkX29yaWdpbmFsX2ltcG9ydF9tZXRhX3VybCA9IFwiZmlsZTovLy9ob21lL3Byb2plY3Qvdml0ZS5jb25maWcudHNcIjtpbXBvcnQgeyBkZWZpbmVDb25maWcgfSBmcm9tICd2aXRlJztcbmltcG9ydCByZWFjdCBmcm9tICdAdml0ZWpzL3BsdWdpbi1yZWFjdCc7XG5cbi8vIGh0dHBzOi8vdml0ZWpzLmRldi9jb25maWcvXG5leHBvcnQgZGVmYXVsdCBkZWZpbmVDb25maWcoe1xuICBwbHVnaW5zOiBbcmVhY3QoKV0sXG4gIC8vIEV4cGxpY2l0bHkgc2V0IGFwcFR5cGUgdG8gJ3NwYScuIFRoaXMgaXMgb2Z0ZW4gdGhlIGRlZmF1bHQgaWYgeW91IGhhdmUgYW4gaW5kZXguaHRtbFxuICAvLyBhdCB0aGUgcm9vdCwgYnV0IGJlaW5nIGV4cGxpY2l0IGNhbiBzb21ldGltZXMgaGVscCBlbnN1cmUgdGhlIGRldiBzZXJ2ZXJcbiAgLy8gY29ycmVjdGx5IGZhbGxzIGJhY2sgdG8gaW5kZXguaHRtbCBmb3IgYWxsIGNsaWVudC1zaWRlIHJvdXRlcy5cbiAgYXBwVHlwZTogJ3NwYScsXG4gIG9wdGltaXplRGVwczoge1xuICAgIGV4Y2x1ZGU6IFsnbHVjaWRlLXJlYWN0J10sIC8vIEltcG9ydGFudCBmb3IgcHJldmVudGluZyBpc3N1ZXMgd2l0aCBsdWNpZGUtcmVhY3QgaW4gYnVpbGRcbiAgfSxcbiAgc2VydmVyOiB7XG4gICAgLy8gVml0ZSdzIGRldiBzZXJ2ZXIgaGFuZGxlcyBTUEEgZmFsbGJhY2tzIGJ5IGRlZmF1bHQgd2hlbiBhcHBUeXBlIGlzICdzcGEnLlxuICAgIC8vIE5vIGV4cGxpY2l0IGhpc3RvcnlBcGlGYWxsYmFjayBpcyB1c3VhbGx5IG5lZWRlZCBoZXJlIGFzIFZpdGUgaGFzIGl0cyBvd24gbWVjaGFuaXNtLlxuICB9XG59KTtcbiJdLAogICJtYXBwaW5ncyI6ICI7QUFBeU4sU0FBUyxvQkFBb0I7QUFDdFAsT0FBTyxXQUFXO0FBR2xCLElBQU8sc0JBQVEsYUFBYTtBQUFBLEVBQzFCLFNBQVMsQ0FBQyxNQUFNLENBQUM7QUFBQTtBQUFBO0FBQUE7QUFBQSxFQUlqQixTQUFTO0FBQUEsRUFDVCxjQUFjO0FBQUEsSUFDWixTQUFTLENBQUMsY0FBYztBQUFBO0FBQUEsRUFDMUI7QUFBQSxFQUNBLFFBQVE7QUFBQTtBQUFBO0FBQUEsRUFHUjtBQUNGLENBQUM7IiwKICAibmFtZXMiOiBbXQp9Cg==

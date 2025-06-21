@@ -25,14 +25,14 @@ const Header: React.FC = () => {
   return (
     <header className="bg-slate-900 text-white shadow-lg sticky top-0 z-50">
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
+        <div className="flex items-center justify-between h-20"> {/* Header height remains h-20 */}
           {/* Logo */}
           <div className="flex-shrink-0">
             <Link to="/" className="flex items-center" onClick={() => setIsMobileMenuOpen(false)}>
               <img 
-                src="/logo.png" 
+                src="https://i.imgur.com/bUxZ7Cj.png" 
                 alt="LUSHTURBATE Logo" 
-                className="h-10 w-auto" // Adjust height as needed. Max height is h-12 for h-16 header.
+                className="h-10 w-auto" 
               />
               {/* Optional: Site name text next to logo if logo is just an icon */}
               {/* <span className="ml-3 text-xl font-bold">LUSHTURBATE</span> */}
@@ -81,7 +81,7 @@ const Header: React.FC = () => {
 
       {/* Mobile Menu */}
       {isMobileMenuOpen && (
-        <div id="mobile-menu" className="md:hidden absolute top-16 inset-x-0 bg-slate-900/95 backdrop-blur-sm p-4 space-y-4 border-t border-slate-700 shadow-xl">
+        <div id="mobile-menu" className="md:hidden absolute top-20 inset-x-0 bg-slate-900/95 backdrop-blur-sm p-4 space-y-4 border-t border-slate-700 shadow-xl"> {/* Adjusted top due to header height change */}
           <form onSubmit={handleSearchSubmit} className="relative">
             <input
               type="text"

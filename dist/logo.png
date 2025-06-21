@@ -1,9 +1,11 @@
-// IMPORTANT: Please download the logo image you provided
-    // and place it in the `public` directory of your project,
-    // naming it `logo.png`.
+// CRITICAL:
+    // 1. Ensure you have DELETED any old `logo.png` from this `public` directory.
+    // 2. RE-DOWNLOAD the logo image from: https://i.ibb.co/LdqG7T7L/lushtubate-logo.png
+    // 3. Save the newly downloaded image DIRECTLY into this `public` folder.
+    // 4. Name the file EXACTLY `logo.png` (all lowercase).
+    // 5. After doing this, RE-DEPLOY your application.
     //
-    // The new image URL you provided is:
-    // https://i.ibb.co/LdqG7T7L/lushtubate-logo.png
-    //
-    // This file is a placeholder. The actual image binary cannot be included here.
-    // Ensure you replace any existing logo.png with this new one.
+    // This file is a placeholder for the actual binary image.
+    // The problem you are experiencing is because the browser cannot find or load
+    // `lushturbate.com/logo.png`. This means the image file was not correctly
+    // deployed to the server at the root of your site's assets.
