@@ -20,18 +20,19 @@ const PlaceholderPage: React.FC<{ title: string }> = ({ title }) => (
 const App: React.FC = () => {
   console.log('[App.tsx] App component rendering.');
   const location = useLocation();
+  console.log('[App.tsx] Current location.pathname on render:', location.pathname); // Log adăugat aici
   const isHomePage = location.pathname === '/';
   const isSearchOrTagPage = location.search.includes('tag=') || location.search.includes('search_query=');
 
   const showHeroBanner = isHomePage && !isSearchOrTagPage;
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-900 text-gray-100 selection:bg-pink-500 selection:text-white">
+    <div className="flex flex-col min-h-screen bg-slate-900 text-gray-100 selection:bg-pink-500 selection:text-white w-full overflow-x-hidden">
       <Header />
       
       {showHeroBanner && <HeroBanner />}
 
-      <main className="flex-grow">
+      <main className="flex-grow w-full"> {/* Added w-full here too for good measure */}
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/model/:username" element={<ModelPage />} />
