@@ -1,7 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
-// Modifică importul: BrowserRouter devine HashRouter
-import { HashRouter } from 'react-router-dom'; 
+import { BrowserRouter } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import App from './App.tsx';
 import { AppProvider } from './contexts/AppContext.tsx';
@@ -12,12 +11,11 @@ console.log('[main.tsx] Script start. About to render React app.');
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <HelmetProvider>
-      {/* Modifică aici: BrowserRouter devine HashRouter */}
-      <HashRouter>
+      <BrowserRouter>
         <AppProvider>
           <App />
         </AppProvider>
-      </HashRouter>
+      </BrowserRouter>
     </HelmetProvider>
   </React.StrictMode>
 );
