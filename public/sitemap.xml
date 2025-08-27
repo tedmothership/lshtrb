@@ -1,36 +1,197 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"
+        xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+  <!-- Homepage -->
   <url>
     <loc>https://lushturbate.com/</loc>
-    <priority>1.00</priority>
-    <changefreq>daily</changefreq>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>1.0</priority>
   </url>
+  
+  <!-- Category Pages -->
   <url>
-    <loc>https://lushturbate.com/about</loc>
-    <priority>0.80</priority>
-    <changefreq>monthly</changefreq>
+    <loc>https://lushturbate.com/?tag=female</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.9</priority>
   </url>
+  
+  <url>
+    <loc>https://lushturbate.com/?tag=male</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://lushturbate.com/?tag=couple</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <url>
+    <loc>https://lushturbate.com/?tag=trans</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  
+  <!-- Popular Tags -->
+  <url>
+    <loc>https://lushturbate.com/?tag=bigboobs</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://lushturbate.com/?tag=anal</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://lushturbate.com/?tag=squirt</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://lushturbate.com/?tag=lovense</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://lushturbate.com/?tag=teen</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://lushturbate.com/?tag=milf</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://lushturbate.com/?tag=asian</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://lushturbate.com/?tag=ebony</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://lushturbate.com/?tag=latina</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://lushturbate.com/?tag=blonde</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://lushturbate.com/?tag=brunette</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://lushturbate.com/?tag=redhead</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://lushturbate.com/?tag=feet</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://lushturbate.com/?tag=toys</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <url>
+    <loc>https://lushturbate.com/?tag=asmr</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>daily</changefreq>
+    <priority>0.8</priority>
+  </url>
+  
+  <!-- Static Pages -->
+  <url>
+    <loc>https://lushturbate.com/terms</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
+    <loc>https://lushturbate.com/privacy</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
   <url>
     <loc>https://lushturbate.com/contact</loc>
-    <priority>0.80</priority>
+    <lastmod>2025-01-15</lastmod>
     <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
   </url>
+  
+  <!-- Pagination Pages -->
   <url>
-    <loc>https://lushturbate.com/privacy-policy</loc>
-    <priority>0.80</priority>
-    <changefreq>yearly</changefreq>
+    <loc>https://lushturbate.com/?page=2</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.7</priority>
   </url>
+  
   <url>
-    <loc>https://lushturbate.com/terms-of-service</loc>
-    <priority>0.80</priority>
-    <changefreq>yearly</changefreq>
+    <loc>https://lushturbate.com/?page=3</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.7</priority>
   </url>
+  
   <url>
-    <loc>https://lushturbate.com/dmca</loc>
-    <priority>0.80</priority>
-    <changefreq>yearly</changefreq>
+    <loc>https://lushturbate.com/?page=4</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.7</priority>
   </url>
-  <!-- Note: For dynamic model pages (e.g., /model/:username), 
-       a server-side generated sitemap is recommended for comprehensive indexing. 
-       This static sitemap covers the main pages. -->
+  
+  <url>
+    <loc>https://lushturbate.com/?page=5</loc>
+    <lastmod>2025-01-15</lastmod>
+    <changefreq>hourly</changefreq>
+    <priority>0.7</priority>
+  </url>
 </urlset>

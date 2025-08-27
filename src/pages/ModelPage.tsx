@@ -309,6 +309,60 @@ const ModelPage: React.FC = () => {
         <title>{pageTitle}</title>
         <meta name="description" content={description} />
         <link rel="canonical" href={canonicalUrl} />
+        
+        {/* Additional SEO meta tags */}
+        <meta name="robots" content="index, follow" />
+        <meta name="googlebot" content="index, follow" />
+        <meta property="og:type" content="profile" />
+        <meta property="og:title" content={pageTitle} />
+        <meta property="og:description" content={description} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:image" content={room.image_url_360x270 || `${window.location.origin}/logo.png`} />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={pageTitle} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={room.image_url_360x270 || `${window.location.origin}/logo.png`} />
+        
+        {/* Structured Data for Model Profile */}
+        <script type="application/ld+json">
+          {JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "ProfilePage",
+            "name": pageTitle,
+            "description": description,
+            "url": canonicalUrl,
+            "mainEntity": {
+              "@type": "Person",
+              "name": modelDisplayName,
+              "gender": displayGender,
+              "image": room.image_url_360x270,
+              "description": room.room_subject || `Live webcam performer ${modelDisplayName}`,
+              "knowsAbout": room.tags || []
+            },
+            "isPartOf": {
+              "@type": "WebSite",
+              "name": "LUSHTURBATE",
+              "url": "https://lushturbate.com/"
+            },
+            "breadcrumb": {
+              "@type": "BreadcrumbList",
+              "itemListElement": [
+                {
+                  "@type": "ListItem",
+                  "position": 1,
+                  "name": "Home",
+                  "item": "https://lushturbate.com/"
+                },
+                {
+                  "@type": "ListItem",
+                  "position": 2,
+                  "name": modelDisplayName,
+                  "item": canonicalUrl
+                }
+              ]
+            }
+          })}
+        </script>
       </Helmet>
 
       <div className="bg-slate-900 min-h-screen py-8 px-4 md:px-6">

@@ -129,6 +129,41 @@ const HomePage: React.FC = () => {
 
   const canonicalUrl = `${window.location.origin}${location.pathname}${location.search}`;
 
+  // Generate structured data for the current page
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": pageTitle,
+    "description": description,
+    "url": canonicalUrl,
+    "isPartOf": {
+      "@type": "WebSite",
+      "name": "LUSHTURBATE",
+      "url": "https://lushturbate.com/"
+    },
+    "breadcrumb": {
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        {
+          "@type": "ListItem",
+          "position": 1,
+          "name": "Home",
+          "item": "https://lushturbate.com/"
+        }
+      ]
+    }
+  };
+
+  // Add category to breadcrumb if applicable
+  if (currentTagFromContextFilters) {
+    structuredData.breadcrumb.itemListElement.push({
+      "@type": "ListItem",
+      "position": 2,
+      "name": currentTagFromContextFilters.charAt(0).toUpperCase() + currentTagFromContextFilters.slice(1),
+      "item": canonicalUrl
+    });
+  }
+
   return (
     <>
       <Helmet>
@@ -142,6 +177,15 @@ const HomePage: React.FC = () => {
         <meta name="twitter:title" content={pageTitle} />
         <meta name="twitter:description" content={description} />
         <meta name="twitter:image" content={`${window.location.origin}/logo.png`} />
+        
+        {/* Additional SEO meta tags */}
+        <meta name="robots" content="index, follow" />
+        <meta name="googlebot" content="index, follow" />
+        
+        {/* Structured Data */}
+        <script type="application/ld+json">
+          {JSON.stringify(structuredData)}
+        </script>
       </Helmet>
 
       <div className="bg-gray-800 pt-6 pb-3 sm:pt-8 sm:pb-4">
